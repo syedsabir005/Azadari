@@ -5,7 +5,7 @@
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
-  background: #f4f4f4;
+  background: #f5f5f5;
   color: #222;
 }
 
@@ -13,59 +13,87 @@ body {
   background: #111;
   color: #fff;
   text-align: center;
-  padding: 28px 16px;
+  padding: 24px 20px;
+  border-bottom: 3px solid #444;
+}
+
+.site-logo {
+  width: 110px;
+  max-width: 110px;
+  margin-bottom: 10px;
+  border-radius: 8px;
 }
 
 .site-header h1 {
   margin: 0;
   font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .site-header p {
-  margin: 8px 0 0;
-  font-size: 15px;
+  margin-top: 8px;
+  font-size: 14px;
+  color: #d5d5d5;
 }
 
 .container {
-  max-width: 850px;
-  margin: 24px auto;
-  padding: 0 16px;
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 0 20px;
 }
 
 .form-section,
 .events-section {
   background: #fff;
-  padding: 20px;
+  padding: 24px;
   margin-bottom: 24px;
-  border-radius: 10px;
+  border-radius: 12px;
   border: 1px solid #ddd;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 h2 {
   margin-top: 0;
+  margin-bottom: 20px;
+}
+
+#majlisCount {
+  margin-top: -10px;
+  margin-bottom: 20px;
+  color: #666;
+  font-size: 14px;
 }
 
 form {
   display: grid;
-  gap: 10px;
+  gap: 12px;
 }
 
 label {
-  font-weight: bold;
+  font-weight: 600;
   font-size: 14px;
 }
 
 input,
 textarea {
   width: 100%;
-  padding: 11px;
+  padding: 12px;
   border: 1px solid #bbb;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 15px;
+  background: #fff;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: #111;
 }
 
 textarea {
-  min-height: 80px;
+  min-height: 90px;
+  resize: vertical;
 }
 
 button,
@@ -73,47 +101,56 @@ button,
   background: #111;
   color: #fff;
   border: none;
-  border-radius: 6px;
-  padding: 11px 14px;
+  border-radius: 8px;
+  padding: 12px 16px;
   font-size: 15px;
   cursor: pointer;
   text-decoration: none;
   text-align: center;
+  transition: 0.2s ease;
+}
+
+button:hover,
+.card-actions a:hover {
+  background: #333;
 }
 
 .event-card {
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 18px;
-  margin-bottom: 16px;
   background: #fff;
+  border-radius: 12px;
+  padding: 22px;
+  margin-bottom: 20px;
+  border-left: 5px solid #111;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .event-title {
-  font-size: 22px;
-  font-weight: bold;
-  margin-bottom: 4px;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 6px;
 }
 
 .event-venue {
-  font-size: 17px;
-  margin-bottom: 16px;
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 18px;
 }
 
 .event-row {
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  line-height: 1.5;
 }
 
 .event-label {
-  font-weight: bold;
+  font-weight: 700;
   display: block;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
 }
 
 .card-actions {
   display: flex;
   gap: 10px;
-  margin-top: 16px;
+  margin-top: 20px;
 }
 
 .card-actions a {
@@ -126,8 +163,21 @@ button,
 }
 
 @media (max-width: 600px) {
+  .site-logo {
+    width: 90px;
+    max-width: 90px;
+  }
+
   .site-header h1 {
     font-size: 23px;
+  }
+
+  .site-header p {
+    font-size: 13px;
+  }
+
+  .container {
+    padding: 0 12px;
   }
 
   .card-actions {
