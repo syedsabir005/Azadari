@@ -1,5 +1,6 @@
 const form = document.getElementById("eventForm");
 const eventsContainer = document.getElementById("eventsContainer");
+const searchInput = document.getElementById("searchInput");
 
 let events = JSON.parse(localStorage.getItem("majalisEvents")) || [];
 let editingIndex = null;
@@ -71,13 +72,47 @@ function resetForm() {
   }
 }
 
+function getFilteredEvents() {
+  const searchTerm = searchInput
+    ? searchInput.value.trim().toLowerCase()
+    : "";
+
+  if (!searchTerm) {
+    return [...events];
+  }
+
+  return events.filter((event) => {
+    const searchableText = `
+      ${event.eventName}
+      ${event.venue}
+      ${event.date}
+      ${event.time}
+      ${event.speaker}
+      ${event.address}
+      ${event.host}
+      ${event.phone}
+      ${event.notes}
+    `.toLowerCase();
+
+    return searchableText.includes(searchTerm);
+  });
+}
+
 function renderEvents() {
   eventsContainer.innerHTML = "";
+
+  const filteredEvents = getFilteredEvents();
 
   const countElement = document.getElementById("majlisCount");
 
   if (countElement) {
-    countElement.textContent = `${events.length} Majalis Scheduled`;
+    if (searchInput && searchInput.value.trim()) {
+      countElement.textContent =
+        `${filteredEvents.length} of ${events.length} Majalis Showing`;
+    } else {
+      countElement.textContent =
+        `${events.length} Majalis Scheduled`;
+    }
   }
 
   if (events.length === 0) {
@@ -86,7 +121,13 @@ function renderEvents() {
     return;
   }
 
-  const sortedEvents = [...events].sort((a, b) => {
+  if (filteredEvents.length === 0) {
+    eventsContainer.innerHTML =
+      '<p class="empty-message">No matching Majalis found.</p>';
+    return;
+  }
+
+  const sortedEvents = [...filteredEvents].sort((a, b) => {
     const dateA = new Date(`${a.date}T${a.time}`);
     const dateB = new Date(`${b.date}T${b.time}`);
 
@@ -269,5 +310,9 @@ form.addEventListener("submit", function (e) {
   resetForm();
   renderEvents();
 });
+
+if (searchInput) {
+  searchInput.addEventListener("input", renderEvents);
+}
 
 renderEvents();
