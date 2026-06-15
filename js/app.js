@@ -2,6 +2,7 @@ const form = document.getElementById("eventForm");
 const eventsContainer = document.getElementById("eventsContainer");
 
 let events = JSON.parse(localStorage.getItem("majalisEvents")) || [];
+let editingIndex = null;
 
 function getOrdinal(day) {
   if (day > 3 && day < 21) return day + "th";
@@ -54,6 +55,20 @@ function cleanPhone(phone) {
 
 function saveEvents() {
   localStorage.setItem("majalisEvents", JSON.stringify(events));
+}
+
+function resetForm() {
+  form.reset();
+  document.getElementById("eventName").value = "Annual Majlis";
+  editingIndex = null;
+
+  const submitButton = form.querySelector("button[type='submit']");
+  submitButton.textContent = "Add Majlis";
+
+  const cancelButton = document.getElementById("cancelEditButton");
+  if (cancelButton) {
+    cancelButton.remove();
+  }
 }
 
 function renderEvents() {
@@ -161,6 +176,13 @@ function renderEvents() {
 
         <button
           type="button"
+          onclick="editEvent(${originalIndex})"
+        >
+          Edit
+        </button>
+
+        <button
+          type="button"
           class="delete-button"
           onclick="deleteEvent(${originalIndex})"
         >
@@ -173,6 +195,40 @@ function renderEvents() {
   });
 }
 
+function editEvent(index) {
+  const event = events[index];
+
+  document.getElementById("eventName").value = event.eventName;
+  document.getElementById("venue").value = event.venue;
+  document.getElementById("date").value = event.date;
+  document.getElementById("time").value = event.time;
+  document.getElementById("speaker").value = event.speaker;
+  document.getElementById("address").value = event.address;
+  document.getElementById("host").value = event.host;
+  document.getElementById("phone").value = event.phone;
+  document.getElementById("notes").value = event.notes;
+
+  editingIndex = index;
+
+  const submitButton = form.querySelector("button[type='submit']");
+  submitButton.textContent = "Update Majlis";
+
+  if (!document.getElementById("cancelEditButton")) {
+    const cancelButton = document.createElement("button");
+    cancelButton.type = "button";
+    cancelButton.id = "cancelEditButton";
+    cancelButton.textContent = "Cancel Edit";
+    cancelButton.onclick = resetForm;
+
+    form.appendChild(cancelButton);
+  }
+
+  window.scrollTo({
+    top: form.offsetTop - 20,
+    behavior: "smooth"
+  });
+}
+
 function deleteEvent(index) {
   if (!confirm("Delete this Majlis?")) {
     return;
@@ -180,13 +236,18 @@ function deleteEvent(index) {
 
   events.splice(index, 1);
   saveEvents();
+
+  if (editingIndex === index) {
+    resetForm();
+  }
+
   renderEvents();
 }
 
 form.addEventListener("submit", function (e) {
   e.preventDefault();
 
-  const newEvent = {
+  const eventData = {
     eventName: document.getElementById("eventName").value,
     venue: document.getElementById("venue").value,
     date: document.getElementById("date").value,
@@ -198,12 +259,14 @@ form.addEventListener("submit", function (e) {
     notes: document.getElementById("notes").value
   };
 
-  events.push(newEvent);
+  if (editingIndex !== null) {
+    events[editingIndex] = eventData;
+  } else {
+    events.push(eventData);
+  }
+
   saveEvents();
-
-  form.reset();
-  document.getElementById("eventName").value = "Annual Majlis";
-
+  resetForm();
   renderEvents();
 });
 
