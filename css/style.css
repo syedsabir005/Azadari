@@ -99,6 +99,16 @@ textarea {
   resize: vertical;
 }
 
+.search-input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 22px;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  font-size: 15px;
+  background: #fff;
+}
+
 button,
 .card-actions a {
   background: #111;
@@ -156,7 +166,8 @@ button:hover,
   margin-top: 20px;
 }
 
-.card-actions a {
+.card-actions a,
+.card-actions button {
   flex: 1;
 }
 
