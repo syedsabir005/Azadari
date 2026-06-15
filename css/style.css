@@ -28,13 +28,16 @@ body {
   margin: 0;
   font-size: 28px;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
 .site-header p {
   margin-top: 8px;
   font-size: 14px;
   color: #d5d5d5;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .container {
@@ -169,11 +172,13 @@ button:hover,
   }
 
   .site-header h1 {
-    font-size: 23px;
+    font-size: 22px;
+    letter-spacing: 1px;
   }
 
   .site-header p {
-    font-size: 13px;
+    font-size: 12px;
+    letter-spacing: 0.5px;
   }
 
   .container {
