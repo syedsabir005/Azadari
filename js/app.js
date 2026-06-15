@@ -37,7 +37,6 @@ function formatDate(dateValue) {
 
 function formatTime(timeValue) {
   const [hour, minute] = timeValue.split(":");
-
   const date = new Date();
 
   date.setHours(hour);
@@ -53,8 +52,18 @@ function cleanPhone(phone) {
   return phone.replace(/\D/g, "");
 }
 
+function saveEvents() {
+  localStorage.setItem("majalisEvents", JSON.stringify(events));
+}
+
 function renderEvents() {
   eventsContainer.innerHTML = "";
+
+  const countElement = document.getElementById("majlisCount");
+
+  if (countElement) {
+    countElement.textContent = `${events.length} Majalis Scheduled`;
+  }
 
   if (events.length === 0) {
     eventsContainer.innerHTML =
@@ -70,42 +79,37 @@ function renderEvents() {
   });
 
   sortedEvents.forEach((event) => {
-    const speaker =
-      event.speaker.trim() || "To Be Announced";
+    const originalIndex = events.indexOf(event);
+    const speaker = event.speaker.trim() || "To Be Announced";
 
-    const notesHtml =
-      event.notes.trim()
-        ? `
-          <div class="event-row">
-            <span class="event-label">Notes</span>
-            ${event.notes}
-          </div>
-        `
-        : "";
+    const notesHtml = event.notes.trim()
+      ? `
+        <div class="event-row">
+          <span class="event-label">Notes</span>
+          ${event.notes}
+        </div>
+      `
+      : "";
 
-    const phoneHtml =
-      event.phone.trim()
-        ? `
-          <div class="event-row">
-            <span class="event-label">Phone</span>
-            ${event.phone}
-          </div>
-        `
-        : "";
+    const phoneHtml = event.phone.trim()
+      ? `
+        <div class="event-row">
+          <span class="event-label">Phone</span>
+          ${event.phone}
+        </div>
+      `
+      : "";
 
-    const callButton =
-      event.phone.trim()
-        ? `
-          <a href="tel:${cleanPhone(event.phone)}">
-            Call
-          </a>
-        `
-        : "";
+    const callButton = event.phone.trim()
+      ? `
+        <a href="tel:${cleanPhone(event.phone)}">
+          Call
+        </a>
+      `
+      : "";
 
     const mapUrl =
-      `https://maps.google.com/?q=${encodeURIComponent(
-        event.address
-      )}`;
+      `https://maps.google.com/?q=${encodeURIComponent(event.address)}`;
 
     const card = document.createElement("div");
     card.className = "event-card";
@@ -154,6 +158,14 @@ function renderEvents() {
         </a>
 
         ${callButton}
+
+        <button
+          type="button"
+          class="delete-button"
+          onclick="deleteEvent(${originalIndex})"
+        >
+          Delete
+        </button>
       </div>
     `;
 
@@ -161,49 +173,36 @@ function renderEvents() {
   });
 }
 
+function deleteEvent(index) {
+  if (!confirm("Delete this Majlis?")) {
+    return;
+  }
+
+  events.splice(index, 1);
+  saveEvents();
+  renderEvents();
+}
+
 form.addEventListener("submit", function (e) {
   e.preventDefault();
 
   const newEvent = {
-    eventName:
-      document.getElementById("eventName").value,
-
-    venue:
-      document.getElementById("venue").value,
-
-    date:
-      document.getElementById("date").value,
-
-    time:
-      document.getElementById("time").value,
-
-    speaker:
-      document.getElementById("speaker").value,
-
-    address:
-      document.getElementById("address").value,
-
-    host:
-      document.getElementById("host").value,
-
-    phone:
-      document.getElementById("phone").value,
-
-    notes:
-      document.getElementById("notes").value
+    eventName: document.getElementById("eventName").value,
+    venue: document.getElementById("venue").value,
+    date: document.getElementById("date").value,
+    time: document.getElementById("time").value,
+    speaker: document.getElementById("speaker").value,
+    address: document.getElementById("address").value,
+    host: document.getElementById("host").value,
+    phone: document.getElementById("phone").value,
+    notes: document.getElementById("notes").value
   };
 
   events.push(newEvent);
-
-  localStorage.setItem(
-    "majalisEvents",
-    JSON.stringify(events)
-  );
+  saveEvents();
 
   form.reset();
-
-  document.getElementById("eventName").value =
-    "Annual Majlis";
+  document.getElementById("eventName").value = "Annual Majlis";
 
   renderEvents();
 });
