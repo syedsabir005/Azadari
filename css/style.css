@@ -1,0 +1,136 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f4f4f4;
+  color: #222;
+}
+
+.site-header {
+  background: #111;
+  color: #fff;
+  text-align: center;
+  padding: 28px 16px;
+}
+
+.site-header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.site-header p {
+  margin: 8px 0 0;
+  font-size: 15px;
+}
+
+.container {
+  max-width: 850px;
+  margin: 24px auto;
+  padding: 0 16px;
+}
+
+.form-section,
+.events-section {
+  background: #fff;
+  padding: 20px;
+  margin-bottom: 24px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+form {
+  display: grid;
+  gap: 10px;
+}
+
+label {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+textarea {
+  min-height: 80px;
+}
+
+button,
+.card-actions a {
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 11px 14px;
+  font-size: 15px;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+}
+
+.event-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 16px;
+  background: #fff;
+}
+
+.event-title {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.event-venue {
+  font-size: 17px;
+  margin-bottom: 16px;
+}
+
+.event-row {
+  margin-bottom: 12px;
+}
+
+.event-label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 3px;
+}
+
+.card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.card-actions a {
+  flex: 1;
+}
+
+.empty-message {
+  color: #666;
+  font-style: italic;
+}
+
+@media (max-width: 600px) {
+  .site-header h1 {
+    font-size: 23px;
+  }
+
+  .card-actions {
+    flex-direction: column;
+  }
+}
