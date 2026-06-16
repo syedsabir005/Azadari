@@ -316,8 +316,14 @@ function renderEvents() {
     const notesLine = event.notes.trim()
       ? `<div><strong>Notes:</strong> ${event.notes}</div>`
       : "";
+    
+    const hasAudit =
+      event.createdBy ||
+      event.createdAt ||
+      event.updatedBy ||
+      event.updatedAt;
 
-    const auditHtml = isAdminPage
+    const auditHtml = isAdminPage && hasAudit
       ? `
         <div class="audit-info">
           <div><strong>Created By:</strong> ${event.createdBy || "Not available"}</div>
