@@ -100,6 +100,39 @@ function getFilteredEvents() {
   });
 }
 
+function buildWhatsAppMessage(event) {
+  const speaker = event.speaker.trim() || "To Be Announced";
+
+  const phoneSection = event.phone.trim()
+    ? `Contact: ${event.phone}\n`
+    : "";
+
+  const notesSection = event.notes.trim()
+    ? `Notes: ${event.notes}\n`
+    : "";
+
+  return `*${event.eventName}*
+${event.venue}
+
+${formatDate(event.date)}
+Time: ${formatTime(event.time)}
+
+Speaker: ${speaker}
+
+Address:
+${event.address}
+
+Requested By: ${event.host}
+${phoneSection}${notesSection}
+DFW Hyderabadi Azadari
+Moharram 2026 - 1448 Hijri`;
+}
+
+function getWhatsAppUrl(event) {
+  const message = buildWhatsAppMessage(event);
+  return `https://wa.me/?text=${encodeURIComponent(message)}`;
+}
+
 function renderEvents() {
   eventsContainer.innerHTML = "";
 
@@ -139,6 +172,7 @@ function renderEvents() {
   sortedEvents.forEach((event) => {
     const originalIndex = events.indexOf(event);
     const speaker = event.speaker.trim() || "To Be Announced";
+    const whatsappUrl = getWhatsAppUrl(event);
 
     const notesHtml = event.notes.trim()
       ? `
@@ -216,6 +250,10 @@ function renderEvents() {
         </a>
 
         ${callButton}
+
+        <a href="${whatsappUrl}" target="_blank">
+          WhatsApp
+        </a>
 
         <button
           type="button"
