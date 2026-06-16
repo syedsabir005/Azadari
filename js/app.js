@@ -99,6 +99,30 @@ function formatTime(timeValue) {
   });
 }
 
+function formatAuditDate(value) {
+  if (!value) return "Not available";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Not available";
+  }
+
+  return date.toLocaleString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit"
+  });
+}
+
+function getCurrentAdminEmail() {
+  return auth.currentUser && auth.currentUser.email
+    ? auth.currentUser.email.toLowerCase()
+    : "unknown";
+}
+
 function getEventDateTime(event) {
   return new Date(`${event.date}T${event.time}`);
 }
@@ -293,6 +317,17 @@ function renderEvents() {
       ? `<div><strong>Notes:</strong> ${event.notes}</div>`
       : "";
 
+    const auditHtml = isAdminPage
+      ? `
+        <div class="audit-info">
+          <div><strong>Created By:</strong> ${event.createdBy || "Not available"}</div>
+          <div><strong>Created At:</strong> ${formatAuditDate(event.createdAt)}</div>
+          <div><strong>Last Updated By:</strong> ${event.updatedBy || "Not available"}</div>
+          <div><strong>Last Updated:</strong> ${formatAuditDate(event.updatedAt)}</div>
+        </div>
+      `
+      : "";
+
     const adminButtons = isAdminPage;
 
     const card = document.createElement("div");
@@ -313,6 +348,8 @@ function renderEvents() {
         ${phoneLine}
         ${notesLine}
       </div>
+
+      ${auditHtml}
 
       ${getActionButtons(event, originalIndex, adminButtons)}
     `;
@@ -402,6 +439,9 @@ async function importEvents(file) {
         return;
       }
 
+      const now = new Date().toISOString();
+      const adminEmail = getCurrentAdminEmail();
+
       for (const item of importedEvents) {
         const cleanItem = {
           eventName: item.eventName || "",
@@ -412,7 +452,11 @@ async function importEvents(file) {
           address: item.address || "",
           host: item.host || "",
           phone: item.phone || "",
-          notes: item.notes || ""
+          notes: item.notes || "",
+          createdBy: item.createdBy || adminEmail,
+          createdAt: item.createdAt || now,
+          updatedBy: adminEmail,
+          updatedAt: now
         };
 
         await addDoc(collection(db, COLLECTION_NAME), cleanItem);
@@ -438,6 +482,9 @@ if (form) {
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
 
+    const now = new Date().toISOString();
+    const adminEmail = getCurrentAdminEmail();
+
     const eventData = {
       eventName: document.getElementById("eventName").value,
       venue: document.getElementById("venue").value,
@@ -447,7 +494,9 @@ if (form) {
       address: document.getElementById("address").value,
       host: document.getElementById("host").value,
       phone: document.getElementById("phone").value,
-      notes: document.getElementById("notes").value
+      notes: document.getElementById("notes").value,
+      updatedBy: adminEmail,
+      updatedAt: now
     };
 
     if (editingIndex !== null) {
@@ -460,7 +509,11 @@ if (form) {
     } else {
       await addDoc(
         collection(db, COLLECTION_NAME),
-        eventData
+        {
+          ...eventData,
+          createdBy: adminEmail,
+          createdAt: now
+        }
       );
     }
 
@@ -528,8 +581,7 @@ if (isAdminPage) {
           password
         );
       } catch (error) {
-        loginError.textContent = error.code;
-        console.error("Firebase login error:", error);
+        loginError.textContent = "Invalid email or password.";
       }
     });
   }
@@ -542,7 +594,7 @@ if (isAdminPage) {
 
   onAuthStateChanged(auth, async function (user) {
     const userEmail = user ? user.email.toLowerCase() : "";
-    
+
     if (!user || !allowedAdmins.includes(userEmail)) {
       if (loginSection) loginSection.style.display = "block";
       if (adminPanel) adminPanel.style.display = "none";
