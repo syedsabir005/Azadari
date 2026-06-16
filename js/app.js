@@ -2,8 +2,14 @@ import { db } from "./firebase.js";
 
 import {
   collection,
-  getDocs
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+const COLLECTION_NAME = "majlis";
 
 const form = document.getElementById("eventForm");
 const eventsContainer = document.getElementById("eventsContainer");
@@ -15,21 +21,18 @@ const nextMajlisSection = document.getElementById("nextMajlisSection");
 const isAdminPage = !!form;
 
 let events = [];
+let editingIndex = null;
 
 async function loadEventsFromFirebase() {
-  const snapshot = await getDocs(
-    collection(db, "majlis")
-  );
+  const snapshot = await getDocs(collection(db, COLLECTION_NAME));
 
-  events = snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
+  events = snapshot.docs.map((docItem) => ({
+    id: docItem.id,
+    ...docItem.data()
   }));
 
   renderEvents();
 }
-
-let editingIndex = null;
 
 function getOrdinal(day) {
   if (day > 3 && day < 21) return day + "th";
@@ -84,9 +87,6 @@ function getEventDateTime(event) {
 
 function cleanPhone(phone) {
   return phone.replace(/\D/g, "");
-}
-
-function saveEvents() {
 }
 
 function resetForm() {
@@ -266,7 +266,7 @@ function renderEvents() {
   sortedEvents.forEach((event) => {
     const originalIndex = events.indexOf(event);
     const speaker = event.speaker.trim() || "To Be Announced";
-    
+
     const phoneLine = isAdminPage && event.phone.trim()
       ? `<div><strong>Phone:</strong> ${event.phone}</div>`
       : "";
@@ -303,7 +303,7 @@ function renderEvents() {
   });
 }
 
-function editEvent(index) {
+window.editEvent = function editEvent(index) {
   if (!isAdminPage) return;
 
   const event = events[index];
@@ -337,22 +337,23 @@ function editEvent(index) {
     top: form.offsetTop - 20,
     behavior: "smooth"
   });
-}
+};
 
-function deleteEvent(index) {
+window.deleteEvent = async function deleteEvent(index) {
   if (!isAdminPage) return;
 
   if (!confirm("Delete this Majlis?")) return;
 
-  events.splice(index, 1);
-  saveEvents();
+  const event = events[index];
+
+  await deleteDoc(doc(db, COLLECTION_NAME, event.id));
 
   if (editingIndex === index) {
     resetForm();
   }
 
-  renderEvents();
-}
+  await loadEventsFromFirebase();
+};
 
 function exportEvents() {
   const data = JSON.stringify(events, null, 2);
@@ -371,10 +372,10 @@ function exportEvents() {
   URL.revokeObjectURL(url);
 }
 
-function importEvents(file) {
+async function importEvents(file) {
   const reader = new FileReader();
 
-  reader.onload = function (event) {
+  reader.onload = async function (event) {
     try {
       const importedEvents = JSON.parse(event.target.result);
 
@@ -383,15 +384,29 @@ function importEvents(file) {
         return;
       }
 
-      events = importedEvents;
-      saveEvents();
+      for (const item of importedEvents) {
+        const cleanItem = {
+          eventName: item.eventName || "",
+          venue: item.venue || "",
+          date: item.date || "",
+          time: item.time || "",
+          speaker: item.speaker || "",
+          address: item.address || "",
+          host: item.host || "",
+          phone: item.phone || "",
+          notes: item.notes || ""
+        };
+
+        await addDoc(collection(db, COLLECTION_NAME), cleanItem);
+      }
+
       resetForm();
 
       if (searchInput) {
         searchInput.value = "";
       }
 
-      renderEvents();
+      await loadEventsFromFirebase();
       alert("Majalis imported successfully.");
     } catch (error) {
       alert("Could not import JSON file.");
@@ -402,7 +417,7 @@ function importEvents(file) {
 }
 
 if (form) {
-  form.addEventListener("submit", function (e) {
+  form.addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const eventData = {
@@ -418,14 +433,21 @@ if (form) {
     };
 
     if (editingIndex !== null) {
-      events[editingIndex] = eventData;
+      const event = events[editingIndex];
+
+      await updateDoc(
+        doc(db, COLLECTION_NAME, event.id),
+        eventData
+      );
     } else {
-      events.push(eventData);
+      await addDoc(
+        collection(db, COLLECTION_NAME),
+        eventData
+      );
     }
 
-    saveEvents();
     resetForm();
-    renderEvents();
+    await loadEventsFromFirebase();
   });
 }
 
