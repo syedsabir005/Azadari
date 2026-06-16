@@ -21,6 +21,19 @@ function getOrdinal(day) {
   }
 }
 
+function getMajlisCountText(count) {
+  return count === 1
+    ? "1 Majlis Scheduled"
+    : `${count} Majalis Scheduled`;
+}
+
+function getSearchCountText(filteredCount, totalCount) {
+  const filteredWord = filteredCount === 1 ? "Majlis" : "Majalis";
+  const totalWord = totalCount === 1 ? "Majlis" : "Majalis";
+
+  return `${filteredCount} ${filteredWord} Showing out of ${totalCount} ${totalWord}`;
+}
+
 function formatDate(dateValue) {
   const date = new Date(dateValue + "T00:00:00");
   const weekday = date.toLocaleDateString("en-US", { weekday: "long" });
@@ -131,6 +144,32 @@ function getWhatsAppUrl(event) {
   return `https://wa.me/?text=${encodeURIComponent(message)}`;
 }
 
+function getActionButtons(event, originalIndex, includeAdminButtons) {
+  const mapUrl =
+    `https://maps.google.com/?q=${encodeURIComponent(event.address)}`;
+  const whatsappUrl = getWhatsAppUrl(event);
+
+  const callButton = event.phone.trim()
+    ? `<a href="tel:${cleanPhone(event.phone)}">Call</a>`
+    : "";
+
+  const adminButtons = includeAdminButtons
+    ? `
+      <button type="button" onclick="editEvent(${originalIndex})">Edit</button>
+      <button type="button" class="delete-button" onclick="deleteEvent(${originalIndex})">Delete</button>
+    `
+    : "";
+
+  return `
+    <div class="card-actions">
+      <a href="${mapUrl}" target="_blank">Directions</a>
+      ${callButton}
+      <a href="${whatsappUrl}" target="_blank">WhatsApp</a>
+      ${adminButtons}
+    </div>
+  `;
+}
+
 function renderNextMajlis() {
   if (!nextMajlisSection) return;
 
@@ -147,33 +186,26 @@ function renderNextMajlis() {
   if (upcomingEvents.length === 0) return;
 
   const nextEvent = upcomingEvents[0];
+  const originalIndex = events.indexOf(nextEvent);
   const speaker = nextEvent.speaker.trim() || "To Be Announced";
-  const mapUrl = `https://maps.google.com/?q=${encodeURIComponent(nextEvent.address)}`;
-  const whatsappUrl = getWhatsAppUrl(nextEvent);
-
-  const callButton = nextEvent.phone.trim()
-    ? `<a href="tel:${cleanPhone(nextEvent.phone)}">Call</a>`
-    : "";
 
   nextMajlisSection.innerHTML = `
-    <div class="next-label">Next Majlis</div>
+    <div class="next-label">Upcoming Majlis</div>
 
     <div class="next-title">${nextEvent.eventName}</div>
-
     <div class="next-venue">${nextEvent.venue}</div>
 
-    <div class="next-details">
-      <div><strong>Day:</strong> ${formatDate(nextEvent.date)}</div>
-      <div><strong>Time:</strong> ${formatTime(nextEvent.time)}</div>
+    <div class="compact-date-line">
+      ${formatDate(nextEvent.date)} • ${formatTime(nextEvent.time)}
+    </div>
+
+    <div class="compact-meta">
       <div><strong>Speaker:</strong> ${speaker}</div>
+      <div><strong>Host:</strong> ${nextEvent.host}</div>
       <div><strong>Address:</strong> ${nextEvent.address}</div>
     </div>
 
-    <div class="card-actions">
-      <a href="${mapUrl}" target="_blank">Directions</a>
-      ${callButton}
-      <a href="${whatsappUrl}" target="_blank">WhatsApp</a>
-    </div>
+    ${getActionButtons(nextEvent, originalIndex, false)}
   `;
 }
 
@@ -188,10 +220,10 @@ function renderEvents() {
   if (countElement) {
     if (searchInput && searchInput.value.trim()) {
       countElement.textContent =
-        `${filteredEvents.length} of ${events.length} Majalis Showing`;
+        getSearchCountText(filteredEvents.length, events.length);
     } else {
       countElement.textContent =
-        `${events.length} Majalis Scheduled`;
+        getMajlisCountText(events.length);
     }
   }
 
@@ -214,70 +246,37 @@ function renderEvents() {
   sortedEvents.forEach((event) => {
     const originalIndex = events.indexOf(event);
     const speaker = event.speaker.trim() || "To Be Announced";
-    const whatsappUrl = getWhatsAppUrl(event);
 
-    const phoneHtml = event.phone.trim()
-      ? `<div class="event-row"><span class="event-label">Phone</span>${event.phone}</div>`
+    const phoneLine = event.phone.trim()
+      ? `<div><strong>Phone:</strong> ${event.phone}</div>`
       : "";
 
-    const notesHtml = event.notes.trim()
-      ? `<div class="event-row"><span class="event-label">Notes</span>${event.notes}</div>`
+    const notesLine = event.notes.trim()
+      ? `<div><strong>Notes:</strong> ${event.notes}</div>`
       : "";
 
-    const callButton = event.phone.trim()
-      ? `<a href="tel:${cleanPhone(event.phone)}">Call</a>`
-      : "";
-
-    const adminButtons = isAdminPage
-      ? `
-        <button type="button" onclick="editEvent(${originalIndex})">Edit</button>
-        <button type="button" class="delete-button" onclick="deleteEvent(${originalIndex})">Delete</button>
-      `
-      : "";
-
-    const mapUrl = `https://maps.google.com/?q=${encodeURIComponent(event.address)}`;
+    const adminButtons = isAdminPage;
 
     const card = document.createElement("div");
-    card.className = "event-card";
+    card.className = "event-card compact-event-card";
 
     card.innerHTML = `
       <div class="event-title">${event.eventName}</div>
       <div class="event-venue">${event.venue}</div>
 
-      <div class="event-row">
-        <span class="event-label">Day</span>
-        ${formatDate(event.date)}
+      <div class="compact-date-line">
+        ${formatDate(event.date)} • ${formatTime(event.time)}
       </div>
 
-      <div class="event-row">
-        <span class="event-label">Time</span>
-        ${formatTime(event.time)}
+      <div class="compact-meta">
+        <div><strong>Speaker:</strong> ${speaker}</div>
+        <div><strong>Host:</strong> ${event.host}</div>
+        <div><strong>Address:</strong> ${event.address}</div>
+        ${phoneLine}
+        ${notesLine}
       </div>
 
-      <div class="event-row">
-        <span class="event-label">Speaker</span>
-        ${speaker}
-      </div>
-
-      <div class="event-row">
-        <span class="event-label">Address</span>
-        ${event.address}
-      </div>
-
-      <div class="event-row">
-        <span class="event-label">Host</span>
-        ${event.host}
-      </div>
-
-      ${phoneHtml}
-      ${notesHtml}
-
-      <div class="card-actions">
-        <a href="${mapUrl}" target="_blank">Directions</a>
-        ${callButton}
-        <a href="${whatsappUrl}" target="_blank">WhatsApp</a>
-        ${adminButtons}
-      </div>
+      ${getActionButtons(event, originalIndex, adminButtons)}
     `;
 
     eventsContainer.appendChild(card);
