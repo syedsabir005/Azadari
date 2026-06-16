@@ -47,13 +47,53 @@ body {
 }
 
 .form-section,
-.events-section {
+.events-section,
+.next-majlis-section {
   background: #fff;
   padding: 24px;
   margin-bottom: 24px;
   border-radius: 12px;
   border: 1px solid #ddd;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.next-majlis-section {
+  border-left: 5px solid #111;
+}
+
+.next-majlis-section:empty {
+  display: none;
+}
+
+.next-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #666;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.next-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.next-venue {
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 16px;
+}
+
+.next-details {
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.next-details strong {
+  display: inline-block;
+  min-width: 80px;
 }
 
 h2 {
@@ -221,5 +261,10 @@ button:hover,
   .data-actions,
   .card-actions {
     flex-direction: column;
+  }
+
+  .next-details strong {
+    display: block;
+    min-width: 0;
   }
 }

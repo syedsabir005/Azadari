@@ -3,6 +3,7 @@ const eventsContainer = document.getElementById("eventsContainer");
 const searchInput = document.getElementById("searchInput");
 const exportButton = document.getElementById("exportButton");
 const importFile = document.getElementById("importFile");
+const nextMajlisSection = document.getElementById("nextMajlisSection");
 
 let events = JSON.parse(localStorage.getItem("majalisEvents")) || [];
 let editingIndex = null;
@@ -50,6 +51,10 @@ function formatTime(timeValue) {
     hour: "numeric",
     minute: "2-digit"
   });
+}
+
+function getEventDateTime(event) {
+  return new Date(`${event.date}T${event.time}`);
 }
 
 function cleanPhone(phone) {
@@ -133,8 +138,79 @@ function getWhatsAppUrl(event) {
   return `https://wa.me/?text=${encodeURIComponent(message)}`;
 }
 
+function renderNextMajlis() {
+  if (!nextMajlisSection) {
+    return;
+  }
+
+  nextMajlisSection.innerHTML = "";
+
+  if (events.length === 0) {
+    return;
+  }
+
+  const now = new Date();
+
+  const upcomingEvents = [...events]
+    .filter((event) => getEventDateTime(event) >= now)
+    .sort((a, b) => getEventDateTime(a) - getEventDateTime(b));
+
+  if (upcomingEvents.length === 0) {
+    return;
+  }
+
+  const nextEvent = upcomingEvents[0];
+  const speaker = nextEvent.speaker.trim() || "To Be Announced";
+  const mapUrl =
+    `https://maps.google.com/?q=${encodeURIComponent(nextEvent.address)}`;
+  const whatsappUrl = getWhatsAppUrl(nextEvent);
+
+  const callButton = nextEvent.phone.trim()
+    ? `
+      <a href="tel:${cleanPhone(nextEvent.phone)}">
+        Call
+      </a>
+    `
+    : "";
+
+  nextMajlisSection.innerHTML = `
+    <div class="next-label">
+      Next Majlis
+    </div>
+
+    <div class="next-title">
+      ${nextEvent.eventName}
+    </div>
+
+    <div class="next-venue">
+      ${nextEvent.venue}
+    </div>
+
+    <div class="next-details">
+      <div><strong>Day:</strong> ${formatDate(nextEvent.date)}</div>
+      <div><strong>Time:</strong> ${formatTime(nextEvent.time)}</div>
+      <div><strong>Speaker:</strong> ${speaker}</div>
+      <div><strong>Address:</strong> ${nextEvent.address}</div>
+    </div>
+
+    <div class="card-actions">
+      <a href="${mapUrl}" target="_blank">
+        Directions
+      </a>
+
+      ${callButton}
+
+      <a href="${whatsappUrl}" target="_blank">
+        WhatsApp
+      </a>
+    </div>
+  `;
+}
+
 function renderEvents() {
   eventsContainer.innerHTML = "";
+
+  renderNextMajlis();
 
   const filteredEvents = getFilteredEvents();
 
@@ -163,10 +239,7 @@ function renderEvents() {
   }
 
   const sortedEvents = [...filteredEvents].sort((a, b) => {
-    const dateA = new Date(`${a.date}T${a.time}`);
-    const dateB = new Date(`${b.date}T${b.time}`);
-
-    return dateA - dateB;
+    return getEventDateTime(a) - getEventDateTime(b);
   });
 
   sortedEvents.forEach((event) => {
