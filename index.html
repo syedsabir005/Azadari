@@ -9,106 +9,18 @@
 <body>
 
   <header class="site-header">
-    <img
-      src="assets/logo.jpeg"
-      alt="DFW Hyderabadi Azadari"
-      class="site-logo"
-    />
-
+    <img src="assets/logo.jpeg" alt="DFW Hyderabadi Azadari" class="site-logo" />
     <h1>DFW Hyderabadi Azadari</h1>
-
-    <p>
-      In House Majalis Schedule for Moharram 2026 - 1448 Hijri
-    </p>
+    <p>In House Majalis Schedule for Moharram 2026 - 1448 Hijri</p>
   </header>
 
   <main class="container">
 
-    <section class="form-section">
-      <h2>Add Majlis</h2>
-
-      <form id="eventForm">
-
-        <label for="eventName">Event Name</label>
-        <input
-          type="text"
-          id="eventName"
-          value="Annual Majlis"
-          required
-        />
-
-        <label for="venue">Venue / Residence</label>
-        <input
-          type="text"
-          id="venue"
-          placeholder="Residence, Hall or Venue Name"
-          required
-        />
-
-        <label for="date">Date</label>
-        <input
-          type="date"
-          id="date"
-          required
-        />
-
-        <label for="time">Time</label>
-        <input
-          type="time"
-          id="time"
-          required
-        />
-
-        <label for="speaker">Speaker</label>
-        <input
-          type="text"
-          id="speaker"
-          placeholder="Leave blank if TBA"
-        />
-
-        <label for="address">Address</label>
-        <input
-          type="text"
-          id="address"
-          placeholder="Full Street Address"
-          autocomplete="street-address"
-          required
-        />
-
-        <label for="host">Host</label>
-        <input
-          type="text"
-          id="host"
-          placeholder="Host Name"
-          required
-        />
-
-        <label for="phone">Phone</label>
-        <input
-          type="tel"
-          id="phone"
-          placeholder="(123) 456-7890"
-        />
-
-        <label for="notes">Notes</label>
-        <textarea
-          id="notes"
-          placeholder="Optional Notes"
-        ></textarea>
-
-        <button type="submit">
-          Add Majlis
-        </button>
-
-      </form>
-    </section>
+    <section id="nextMajlisSection" class="next-majlis-section"></section>
 
     <section class="events-section">
       <h2>Majalis Schedule</h2>
-
-      <p id="majlisCount">
-        0 Majalis Scheduled
-      </p>
+      <p id="majlisCount">0 Majalis Scheduled</p>
 
       <input
         type="text"
@@ -117,28 +29,9 @@
         placeholder="Search by speaker, host, venue, address, or notes"
       />
 
-      <div class="data-actions">
-        <button
-          type="button"
-          id="exportButton"
-        >
-          Export JSON
-        </button>
-
-        <label
-          for="importFile"
-          class="import-label"
-        >
-          Import JSON
-        </label>
-
-        <input
-          type="file"
-          id="importFile"
-          accept=".json"
-          hidden
-        />
-      </div>
+      <p class="admin-note">
+        For any changes, corrections, cancellation, or new Majlis entry, please contact admin.
+      </p>
 
       <div id="eventsContainer"></div>
     </section>
@@ -146,12 +39,6 @@
   </main>
 
   <script src="js/app.js"></script>
-
-  <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPbaxKKCslYI2Drjo_SmXEm69klsbX7HI&libraries=places&callback=initAddressAutocomplete"
-    async
-    defer>
-  </script>
 
 </body>
 </html>

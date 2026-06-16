@@ -5,6 +5,8 @@ const exportButton = document.getElementById("exportButton");
 const importFile = document.getElementById("importFile");
 const nextMajlisSection = document.getElementById("nextMajlisSection");
 
+const isAdminPage = !!form;
+
 let events = JSON.parse(localStorage.getItem("majalisEvents")) || [];
 let editingIndex = null;
 
@@ -12,28 +14,17 @@ function getOrdinal(day) {
   if (day > 3 && day < 21) return day + "th";
 
   switch (day % 10) {
-    case 1:
-      return day + "st";
-    case 2:
-      return day + "nd";
-    case 3:
-      return day + "rd";
-    default:
-      return day + "th";
+    case 1: return day + "st";
+    case 2: return day + "nd";
+    case 3: return day + "rd";
+    default: return day + "th";
   }
 }
 
 function formatDate(dateValue) {
   const date = new Date(dateValue + "T00:00:00");
-
-  const weekday = date.toLocaleDateString("en-US", {
-    weekday: "long"
-  });
-
-  const month = date.toLocaleDateString("en-US", {
-    month: "long"
-  });
-
+  const weekday = date.toLocaleDateString("en-US", { weekday: "long" });
+  const month = date.toLocaleDateString("en-US", { month: "long" });
   const day = getOrdinal(date.getDate());
   const year = date.getFullYear();
 
@@ -66,6 +57,8 @@ function saveEvents() {
 }
 
 function resetForm() {
+  if (!form) return;
+
   form.reset();
   document.getElementById("eventName").value = "Annual Majlis";
   editingIndex = null;
@@ -139,15 +132,11 @@ function getWhatsAppUrl(event) {
 }
 
 function renderNextMajlis() {
-  if (!nextMajlisSection) {
-    return;
-  }
+  if (!nextMajlisSection) return;
 
   nextMajlisSection.innerHTML = "";
 
-  if (events.length === 0) {
-    return;
-  }
+  if (events.length === 0) return;
 
   const now = new Date();
 
@@ -155,36 +144,23 @@ function renderNextMajlis() {
     .filter((event) => getEventDateTime(event) >= now)
     .sort((a, b) => getEventDateTime(a) - getEventDateTime(b));
 
-  if (upcomingEvents.length === 0) {
-    return;
-  }
+  if (upcomingEvents.length === 0) return;
 
   const nextEvent = upcomingEvents[0];
   const speaker = nextEvent.speaker.trim() || "To Be Announced";
-  const mapUrl =
-    `https://maps.google.com/?q=${encodeURIComponent(nextEvent.address)}`;
+  const mapUrl = `https://maps.google.com/?q=${encodeURIComponent(nextEvent.address)}`;
   const whatsappUrl = getWhatsAppUrl(nextEvent);
 
   const callButton = nextEvent.phone.trim()
-    ? `
-      <a href="tel:${cleanPhone(nextEvent.phone)}">
-        Call
-      </a>
-    `
+    ? `<a href="tel:${cleanPhone(nextEvent.phone)}">Call</a>`
     : "";
 
   nextMajlisSection.innerHTML = `
-    <div class="next-label">
-      Next Majlis
-    </div>
+    <div class="next-label">Next Majlis</div>
 
-    <div class="next-title">
-      ${nextEvent.eventName}
-    </div>
+    <div class="next-title">${nextEvent.eventName}</div>
 
-    <div class="next-venue">
-      ${nextEvent.venue}
-    </div>
+    <div class="next-venue">${nextEvent.venue}</div>
 
     <div class="next-details">
       <div><strong>Day:</strong> ${formatDate(nextEvent.date)}</div>
@@ -194,15 +170,9 @@ function renderNextMajlis() {
     </div>
 
     <div class="card-actions">
-      <a href="${mapUrl}" target="_blank">
-        Directions
-      </a>
-
+      <a href="${mapUrl}" target="_blank">Directions</a>
       ${callButton}
-
-      <a href="${whatsappUrl}" target="_blank">
-        WhatsApp
-      </a>
+      <a href="${whatsappUrl}" target="_blank">WhatsApp</a>
     </div>
   `;
 }
@@ -213,7 +183,6 @@ function renderEvents() {
   renderNextMajlis();
 
   const filteredEvents = getFilteredEvents();
-
   const countElement = document.getElementById("majlisCount");
 
   if (countElement) {
@@ -247,46 +216,33 @@ function renderEvents() {
     const speaker = event.speaker.trim() || "To Be Announced";
     const whatsappUrl = getWhatsAppUrl(event);
 
-    const notesHtml = event.notes.trim()
-      ? `
-        <div class="event-row">
-          <span class="event-label">Notes</span>
-          ${event.notes}
-        </div>
-      `
+    const phoneHtml = event.phone.trim()
+      ? `<div class="event-row"><span class="event-label">Phone</span>${event.phone}</div>`
       : "";
 
-    const phoneHtml = event.phone.trim()
-      ? `
-        <div class="event-row">
-          <span class="event-label">Phone</span>
-          ${event.phone}
-        </div>
-      `
+    const notesHtml = event.notes.trim()
+      ? `<div class="event-row"><span class="event-label">Notes</span>${event.notes}</div>`
       : "";
 
     const callButton = event.phone.trim()
+      ? `<a href="tel:${cleanPhone(event.phone)}">Call</a>`
+      : "";
+
+    const adminButtons = isAdminPage
       ? `
-        <a href="tel:${cleanPhone(event.phone)}">
-          Call
-        </a>
+        <button type="button" onclick="editEvent(${originalIndex})">Edit</button>
+        <button type="button" class="delete-button" onclick="deleteEvent(${originalIndex})">Delete</button>
       `
       : "";
 
-    const mapUrl =
-      `https://maps.google.com/?q=${encodeURIComponent(event.address)}`;
+    const mapUrl = `https://maps.google.com/?q=${encodeURIComponent(event.address)}`;
 
     const card = document.createElement("div");
     card.className = "event-card";
 
     card.innerHTML = `
-      <div class="event-title">
-        ${event.eventName}
-      </div>
-
-      <div class="event-venue">
-        ${event.venue}
-      </div>
+      <div class="event-title">${event.eventName}</div>
+      <div class="event-venue">${event.venue}</div>
 
       <div class="event-row">
         <span class="event-label">Day</span>
@@ -314,34 +270,13 @@ function renderEvents() {
       </div>
 
       ${phoneHtml}
-
       ${notesHtml}
 
       <div class="card-actions">
-        <a href="${mapUrl}" target="_blank">
-          Directions
-        </a>
-
+        <a href="${mapUrl}" target="_blank">Directions</a>
         ${callButton}
-
-        <a href="${whatsappUrl}" target="_blank">
-          WhatsApp
-        </a>
-
-        <button
-          type="button"
-          onclick="editEvent(${originalIndex})"
-        >
-          Edit
-        </button>
-
-        <button
-          type="button"
-          class="delete-button"
-          onclick="deleteEvent(${originalIndex})"
-        >
-          Delete
-        </button>
+        <a href="${whatsappUrl}" target="_blank">WhatsApp</a>
+        ${adminButtons}
       </div>
     `;
 
@@ -350,6 +285,8 @@ function renderEvents() {
 }
 
 function editEvent(index) {
+  if (!isAdminPage) return;
+
   const event = events[index];
 
   document.getElementById("eventName").value = event.eventName;
@@ -384,9 +321,9 @@ function editEvent(index) {
 }
 
 function deleteEvent(index) {
-  if (!confirm("Delete this Majlis?")) {
-    return;
-  }
+  if (!isAdminPage) return;
+
+  if (!confirm("Delete this Majlis?")) return;
 
   events.splice(index, 1);
   saveEvents();
@@ -430,12 +367,12 @@ function importEvents(file) {
       events = importedEvents;
       saveEvents();
       resetForm();
-      renderEvents();
 
       if (searchInput) {
         searchInput.value = "";
       }
 
+      renderEvents();
       alert("Majalis imported successfully.");
     } catch (error) {
       alert("Could not import JSON file.");
@@ -445,31 +382,33 @@ function importEvents(file) {
   reader.readAsText(file);
 }
 
-form.addEventListener("submit", function (e) {
-  e.preventDefault();
+if (form) {
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
 
-  const eventData = {
-    eventName: document.getElementById("eventName").value,
-    venue: document.getElementById("venue").value,
-    date: document.getElementById("date").value,
-    time: document.getElementById("time").value,
-    speaker: document.getElementById("speaker").value,
-    address: document.getElementById("address").value,
-    host: document.getElementById("host").value,
-    phone: document.getElementById("phone").value,
-    notes: document.getElementById("notes").value
-  };
+    const eventData = {
+      eventName: document.getElementById("eventName").value,
+      venue: document.getElementById("venue").value,
+      date: document.getElementById("date").value,
+      time: document.getElementById("time").value,
+      speaker: document.getElementById("speaker").value,
+      address: document.getElementById("address").value,
+      host: document.getElementById("host").value,
+      phone: document.getElementById("phone").value,
+      notes: document.getElementById("notes").value
+    };
 
-  if (editingIndex !== null) {
-    events[editingIndex] = eventData;
-  } else {
-    events.push(eventData);
-  }
+    if (editingIndex !== null) {
+      events[editingIndex] = eventData;
+    } else {
+      events.push(eventData);
+    }
 
-  saveEvents();
-  resetForm();
-  renderEvents();
-});
+    saveEvents();
+    resetForm();
+    renderEvents();
+  });
+}
 
 if (searchInput) {
   searchInput.addEventListener("input", renderEvents);
@@ -483,9 +422,7 @@ if (importFile) {
   importFile.addEventListener("change", function (e) {
     const file = e.target.files[0];
 
-    if (!file) {
-      return;
-    }
+    if (!file) return;
 
     importEvents(file);
     importFile.value = "";
@@ -495,9 +432,7 @@ if (importFile) {
 function initAddressAutocomplete() {
   const addressInput = document.getElementById("address");
 
-  if (!addressInput || !window.google) {
-    return;
-  }
+  if (!addressInput || !window.google) return;
 
   const autocomplete = new google.maps.places.Autocomplete(addressInput, {
     types: ["address"],
