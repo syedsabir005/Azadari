@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DFW Hyderabadi Azadari - Moharram 2026</title>
+  <title>DFW Hyderabadi Azadari - Admin</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -18,129 +18,171 @@
     <h1>DFW Hyderabadi Azadari</h1>
 
     <p>
-      In House Majalis Schedule for Moharram 2026 - 1448 Hijri
+      Admin Panel - Moharram 2026 - 1448 Hijri
     </p>
   </header>
 
   <main class="container">
 
-    <section class="form-section">
-      <h2>Add Majlis</h2>
+    <section id="loginSection" class="form-section">
+      <h2>Admin Login</h2>
 
-      <form id="eventForm">
-
-        <label for="eventName">Event Name</label>
+      <form id="loginForm">
+        <label for="loginEmail">Email</label>
         <input
-          type="text"
-          id="eventName"
-          value="Annual Majlis"
+          type="email"
+          id="loginEmail"
           required
         />
 
-        <label for="venue">Venue / Residence</label>
+        <label for="loginPassword">Password</label>
         <input
-          type="text"
-          id="venue"
-          placeholder="Residence, Hall or Venue Name"
+          type="password"
+          id="loginPassword"
           required
         />
-
-        <label for="date">Date</label>
-        <input
-          type="date"
-          id="date"
-          required
-        />
-
-        <label for="time">Time</label>
-        <input
-          type="time"
-          id="time"
-          required
-        />
-
-        <label for="speaker">Speaker</label>
-        <input
-          type="text"
-          id="speaker"
-          placeholder="Leave blank if TBA"
-        />
-
-        <label for="address">Address</label>
-        <input
-          type="text"
-          id="address"
-          placeholder="Full Street Address"
-          autocomplete="street-address"
-          required
-        />
-
-        <label for="host">Host</label>
-        <input
-          type="text"
-          id="host"
-          placeholder="Host Name"
-          required
-        />
-
-        <label for="phone">Phone</label>
-        <input
-          type="tel"
-          id="phone"
-          placeholder="(123) 456-7890"
-        />
-
-        <label for="notes">Notes</label>
-        <textarea
-          id="notes"
-          placeholder="Optional Notes"
-        ></textarea>
 
         <button type="submit">
-          Add Majlis
+          Login
         </button>
-
       </form>
+
+      <p id="loginError" class="empty-message"></p>
     </section>
 
-    <section class="events-section">
-      <h2>Majalis Schedule</h2>
-
-      <p id="majlisCount">
-        0 Majalis Scheduled
-      </p>
-
-      <input
-        type="text"
-        id="searchInput"
-        class="search-input"
-        placeholder="Search by speaker, host, venue, address, or notes"
-      />
+    <section
+      id="adminPanel"
+      style="display: none;"
+    >
 
       <div class="data-actions">
         <button
           type="button"
-          id="exportButton"
+          id="logoutButton"
         >
-          Export JSON
+          Logout
         </button>
-
-        <label
-          for="importFile"
-          class="import-label"
-        >
-          Import JSON
-        </label>
-
-        <input
-          type="file"
-          id="importFile"
-          accept=".json"
-          hidden
-        />
       </div>
 
-      <div id="eventsContainer"></div>
+      <section class="form-section">
+        <h2>Add Majlis</h2>
+
+        <form id="eventForm">
+
+          <label for="eventName">Event Name</label>
+          <input
+            type="text"
+            id="eventName"
+            value="Annual Majlis"
+            required
+          />
+
+          <label for="venue">Venue / Residence</label>
+          <input
+            type="text"
+            id="venue"
+            placeholder="Residence, Hall or Venue Name"
+            required
+          />
+
+          <label for="date">Date</label>
+          <input
+            type="date"
+            id="date"
+            required
+          />
+
+          <label for="time">Time</label>
+          <input
+            type="time"
+            id="time"
+            required
+          />
+
+          <label for="speaker">Speaker</label>
+          <input
+            type="text"
+            id="speaker"
+            placeholder="Leave blank if TBA"
+          />
+
+          <label for="address">Address</label>
+          <input
+            type="text"
+            id="address"
+            placeholder="Full Street Address"
+            autocomplete="street-address"
+            required
+          />
+
+          <label for="host">Host</label>
+          <input
+            type="text"
+            id="host"
+            placeholder="Host Name"
+            required
+          />
+
+          <label for="phone">Phone</label>
+          <input
+            type="tel"
+            id="phone"
+            placeholder="(123) 456-7890"
+          />
+
+          <label for="notes">Notes</label>
+          <textarea
+            id="notes"
+            placeholder="Optional Notes"
+          ></textarea>
+
+          <button type="submit">
+            Add Majlis
+          </button>
+
+        </form>
+      </section>
+
+      <section class="events-section">
+        <h2>Majalis Schedule</h2>
+
+        <p id="majlisCount">
+          0 Majalis Scheduled
+        </p>
+
+        <input
+          type="text"
+          id="searchInput"
+          class="search-input"
+          placeholder="Search by speaker, host, venue, address, or notes"
+        />
+
+        <div class="data-actions">
+          <button
+            type="button"
+            id="exportButton"
+          >
+            Export JSON
+          </button>
+
+          <label
+            for="importFile"
+            class="import-label"
+          >
+            Import JSON
+          </label>
+
+          <input
+            type="file"
+            id="importFile"
+            accept=".json"
+            hidden
+          />
+        </div>
+
+        <div id="eventsContainer"></div>
+      </section>
+
     </section>
 
   </main>
