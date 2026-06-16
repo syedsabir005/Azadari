@@ -1,3 +1,10 @@
+import { db } from "./firebase.js";
+
+import {
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
 const form = document.getElementById("eventForm");
 const eventsContainer = document.getElementById("eventsContainer");
 const searchInput = document.getElementById("searchInput");
@@ -7,7 +14,21 @@ const nextMajlisSection = document.getElementById("nextMajlisSection");
 
 const isAdminPage = !!form;
 
-let events = JSON.parse(localStorage.getItem("majalisEvents")) || [];
+let events = [];
+
+async function loadEventsFromFirebase() {
+  const snapshot = await getDocs(
+    collection(db, "majlis")
+  );
+
+  events = snapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  }));
+
+  renderEvents();
+}
+
 let editingIndex = null;
 
 function getOrdinal(day) {
@@ -451,4 +472,4 @@ function initAddressAutocomplete() {
 
 window.initAddressAutocomplete = initAddressAutocomplete;
 
-renderEvents();
+loadEventsFromFirebase();
