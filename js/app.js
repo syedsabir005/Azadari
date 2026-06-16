@@ -87,7 +87,6 @@ function cleanPhone(phone) {
 }
 
 function saveEvents() {
-  localStorage.setItem("majalisEvents", JSON.stringify(events));
 }
 
 function resetForm() {
