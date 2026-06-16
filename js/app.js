@@ -124,6 +124,8 @@ ${event.address}
 
 Host: ${event.host}
 ${phoneSection}${notesSection}
+DFW Hyderabadi Azadari
+Moharram 2026 - 1448 Hijri`;
 }
 
 function getWhatsAppUrl(event) {
