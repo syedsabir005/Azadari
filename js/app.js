@@ -15,11 +15,7 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
-const loginSection = document.getElementById("loginSection");
-const loginForm = document.getElementById("loginForm");
-const loginError = document.getElementById("loginError");
-const adminPanel = document.getElementById("adminPanel");
-const logoutButton = document.getElementById("logoutButton");
+const COLLECTION_NAME = "majlis";
 
 const allowedAdmins = [
   "syedsabir005@gmail.com",
@@ -27,19 +23,25 @@ const allowedAdmins = [
   "mohammedali8027@gmail.com"
 ];
 
-const COLLECTION_NAME = "majlis";
+const loginSection = document.getElementById("loginSection");
+const loginForm = document.getElementById("loginForm");
+const loginError = document.getElementById("loginError");
+const adminPanel = document.getElementById("adminPanel");
+const logoutButton = document.getElementById("logoutButton");
+
+const showAdminLoginButton = document.getElementById("showAdminLogin");
 
 const form = document.getElementById("eventForm");
-const eventsContainer = document.getElementById("eventsContainer");
+const publicEventsContainer = document.getElementById("eventsContainer");
+const adminEventsContainer = document.getElementById("adminEventsContainer");
 const searchInput = document.getElementById("searchInput");
 const exportButton = document.getElementById("exportButton");
 const importFile = document.getElementById("importFile");
 const nextMajlisSection = document.getElementById("nextMajlisSection");
 
-const isAdminPage = !!form;
-
 let events = [];
 let editingIndex = null;
+let isAdminAuthenticated = false;
 
 async function loadEventsFromFirebase() {
   const snapshot = await getDocs(collection(db, COLLECTION_NAME));
@@ -147,6 +149,12 @@ function resetForm() {
   }
 }
 
+function getSortedEvents(eventList) {
+  return [...eventList].sort((a, b) => {
+    return getEventDateTime(a) - getEventDateTime(b);
+  });
+}
+
 function getFilteredEvents() {
   const searchTerm = searchInput
     ? searchInput.value.trim().toLowerCase()
@@ -241,9 +249,8 @@ function renderNextMajlis() {
 
   const now = new Date();
 
-  const upcomingEvents = [...events]
-    .filter((event) => getEventDateTime(event) >= now)
-    .sort((a, b) => getEventDateTime(a) - getEventDateTime(b));
+  const upcomingEvents = getSortedEvents(events)
+    .filter((event) => getEventDateTime(event) >= now);
 
   if (upcomingEvents.length === 0) return;
 
@@ -263,7 +270,6 @@ function renderNextMajlis() {
 
     <div class="compact-meta">
       <div><strong>Speaker:</strong> ${speaker}</div>
-      <div><strong>Host:</strong> ${nextEvent.host}</div>
       <div><strong>Address:</strong> ${nextEvent.address}</div>
     </div>
 
@@ -271,10 +277,88 @@ function renderNextMajlis() {
   `;
 }
 
-function renderEvents() {
-  eventsContainer.innerHTML = "";
+function buildEventCard(event, includeAdminTools) {
+  const originalIndex = events.indexOf(event);
+  const speaker = event.speaker.trim() || "To Be Announced";
 
-  renderNextMajlis();
+  const phoneLine = includeAdminTools && event.phone.trim()
+    ? `<div><strong>Phone:</strong> ${event.phone}</div>`
+    : "";
+
+  const hostLine = includeAdminTools
+    ? `<div><strong>Host:</strong> ${event.host}</div>`
+    : "";
+
+  const notesLine = event.notes.trim()
+    ? `<div><strong>Notes:</strong> ${event.notes}</div>`
+    : "";
+
+  const hasAudit =
+    event.createdBy ||
+    event.createdAt ||
+    event.updatedBy ||
+    event.updatedAt;
+
+  const auditHtml = includeAdminTools && hasAudit
+    ? `
+      <div class="audit-info">
+        <div><strong>Created By:</strong> ${event.createdBy || "Not available"}</div>
+        <div><strong>Created At:</strong> ${formatAuditDate(event.createdAt)}</div>
+        <div><strong>Last Updated By:</strong> ${event.updatedBy || "Not available"}</div>
+        <div><strong>Last Updated:</strong> ${formatAuditDate(event.updatedAt)}</div>
+      </div>
+    `
+    : "";
+
+  const card = document.createElement("div");
+  card.className = "event-card compact-event-card";
+
+  card.innerHTML = `
+    <div class="event-title">${event.eventName}</div>
+    <div class="event-venue">${event.venue}</div>
+
+    <div class="compact-date-line">
+      ${formatDate(event.date)} • ${formatTime(event.time)}
+    </div>
+
+    <div class="compact-meta">
+      <div><strong>Speaker:</strong> ${speaker}</div>
+      ${hostLine}
+      <div><strong>Address:</strong> ${event.address}</div>
+      ${phoneLine}
+      ${notesLine}
+    </div>
+
+    ${auditHtml}
+
+    ${getActionButtons(event, originalIndex, includeAdminTools)}
+  `;
+
+  return card;
+}
+
+function renderPublicEvents() {
+  if (!publicEventsContainer) return;
+
+  publicEventsContainer.innerHTML = "";
+
+  if (events.length === 0) {
+    publicEventsContainer.innerHTML =
+      '<p class="empty-message">No Majalis added yet.</p>';
+    return;
+  }
+
+  getSortedEvents(events).forEach((event) => {
+    publicEventsContainer.appendChild(
+      buildEventCard(event, false)
+    );
+  });
+}
+
+function renderAdminEvents() {
+  if (!adminEventsContainer || !isAdminAuthenticated) return;
+
+  adminEventsContainer.innerHTML = "";
 
   const filteredEvents = getFilteredEvents();
   const countElement = document.getElementById("majlisCount");
@@ -290,82 +374,32 @@ function renderEvents() {
   }
 
   if (events.length === 0) {
-    eventsContainer.innerHTML =
+    adminEventsContainer.innerHTML =
       '<p class="empty-message">No Majalis added yet.</p>';
     return;
   }
 
   if (filteredEvents.length === 0) {
-    eventsContainer.innerHTML =
+    adminEventsContainer.innerHTML =
       '<p class="empty-message">No matching Majalis found.</p>';
     return;
   }
 
-  const sortedEvents = [...filteredEvents].sort((a, b) => {
-    return getEventDateTime(a) - getEventDateTime(b);
-  });
-
-  sortedEvents.forEach((event) => {
-    const originalIndex = events.indexOf(event);
-    const speaker = event.speaker.trim() || "To Be Announced";
-
-    const phoneLine = isAdminPage && event.phone.trim()
-      ? `<div><strong>Phone:</strong> ${event.phone}</div>`
-      : "";
-
-    const notesLine = event.notes.trim()
-      ? `<div><strong>Notes:</strong> ${event.notes}</div>`
-      : "";
-    
-    const hasAudit =
-      event.createdBy ||
-      event.createdAt ||
-      event.updatedBy ||
-      event.updatedAt;
-
-    const auditHtml = isAdminPage && hasAudit
-      ? `
-        <div class="audit-info">
-          <div><strong>Created By:</strong> ${event.createdBy || "Not available"}</div>
-          <div><strong>Created At:</strong> ${formatAuditDate(event.createdAt)}</div>
-          <div><strong>Last Updated By:</strong> ${event.updatedBy || "Not available"}</div>
-          <div><strong>Last Updated:</strong> ${formatAuditDate(event.updatedAt)}</div>
-        </div>
-      `
-      : "";
-
-    const adminButtons = isAdminPage;
-
-    const card = document.createElement("div");
-    card.className = "event-card compact-event-card";
-
-    card.innerHTML = `
-      <div class="event-title">${event.eventName}</div>
-      <div class="event-venue">${event.venue}</div>
-
-      <div class="compact-date-line">
-        ${formatDate(event.date)} • ${formatTime(event.time)}
-      </div>
-
-      <div class="compact-meta">
-        <div><strong>Speaker:</strong> ${speaker}</div>
-        ${isAdminPage ? `<div><strong>Host:</strong> ${event.host}</div>` : ""}
-        <div><strong>Address:</strong> ${event.address}</div>
-        ${phoneLine}
-        ${notesLine}
-      </div>
-
-      ${auditHtml}
-
-      ${getActionButtons(event, originalIndex, adminButtons)}
-    `;
-
-    eventsContainer.appendChild(card);
+  getSortedEvents(filteredEvents).forEach((event) => {
+    adminEventsContainer.appendChild(
+      buildEventCard(event, true)
+    );
   });
 }
 
+function renderEvents() {
+  renderNextMajlis();
+  renderPublicEvents();
+  renderAdminEvents();
+}
+
 window.editEvent = function editEvent(index) {
-  if (!isAdminPage) return;
+  if (!isAdminAuthenticated) return;
 
   const event = events[index];
 
@@ -401,7 +435,7 @@ window.editEvent = function editEvent(index) {
 };
 
 window.deleteEvent = async function deleteEvent(index) {
-  if (!isAdminPage) return;
+  if (!isAdminAuthenticated) return;
 
   if (!confirm("Delete this Majlis?")) return;
 
@@ -488,6 +522,8 @@ if (form) {
   form.addEventListener("submit", async function (e) {
     e.preventDefault();
 
+    if (!isAdminAuthenticated) return;
+
     const now = new Date().toISOString();
     const adminEmail = getCurrentAdminEmail();
 
@@ -529,7 +565,7 @@ if (form) {
 }
 
 if (searchInput) {
-  searchInput.addEventListener("input", renderEvents);
+  searchInput.addEventListener("input", renderAdminEvents);
 }
 
 if (exportButton) {
@@ -546,6 +582,74 @@ if (importFile) {
     importFile.value = "";
   });
 }
+
+if (loginForm) {
+  loginForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+
+    try {
+      loginError.textContent = "";
+
+      await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+    } catch (error) {
+      loginError.textContent = "Invalid email or password.";
+    }
+  });
+}
+
+if (logoutButton) {
+  logoutButton.addEventListener("click", async function () {
+    await signOut(auth);
+  });
+}
+
+if (showAdminLoginButton) {
+  showAdminLoginButton.addEventListener("click", function (e) {
+    e.preventDefault();
+
+    if (loginSection) loginSection.style.display = "block";
+    if (showAdminLoginButton) showAdminLoginButton.style.display = "none";
+  });
+}
+
+onAuthStateChanged(auth, async function (user) {
+  const userEmail = user ? user.email.toLowerCase() : "";
+
+  if (!user || !allowedAdmins.includes(userEmail)) {
+    isAdminAuthenticated = false;
+
+    if (loginSection) loginSection.style.display = "none";
+    if (adminPanel) adminPanel.style.display = "none";
+    if (showAdminLoginButton) {
+      showAdminLoginButton.style.display = "inline";
+    }
+
+    if (user && !allowedAdmins.includes(userEmail)) {
+      loginError.textContent = "You are not authorized to access admin.";
+      await signOut(auth);
+    }
+
+    renderEvents();
+    return;
+  }
+
+  isAdminAuthenticated = true;
+
+  if (loginSection) loginSection.style.display = "none";
+  if (adminPanel) adminPanel.style.display = "block";
+  if (showAdminLoginButton) {
+    showAdminLoginButton.style.display = "none";
+  }
+
+  await loadEventsFromFirebase();
+});
 
 function initAddressAutocomplete() {
   const addressInput = document.getElementById("address");
@@ -570,54 +674,4 @@ function initAddressAutocomplete() {
 
 window.initAddressAutocomplete = initAddressAutocomplete;
 
-if (isAdminPage) {
-  if (loginForm) {
-    loginForm.addEventListener("submit", async function (e) {
-      e.preventDefault();
-
-      const email = document.getElementById("loginEmail").value.trim();
-      const password = document.getElementById("loginPassword").value;
-
-      try {
-        loginError.textContent = "";
-
-        await signInWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
-      } catch (error) {
-        loginError.textContent = "Invalid email or password.";
-      }
-    });
-  }
-
-  if (logoutButton) {
-    logoutButton.addEventListener("click", async function () {
-      await signOut(auth);
-    });
-  }
-
-  onAuthStateChanged(auth, async function (user) {
-    const userEmail = user ? user.email.toLowerCase() : "";
-
-    if (!user || !allowedAdmins.includes(userEmail)) {
-      if (loginSection) loginSection.style.display = "block";
-      if (adminPanel) adminPanel.style.display = "none";
-
-      if (user && !allowedAdmins.includes(userEmail)) {
-        loginError.textContent = "You are not authorized to access admin.";
-        await signOut(auth);
-      }
-
-      return;
-    }
-
-    if (loginSection) loginSection.style.display = "none";
-    if (adminPanel) adminPanel.style.display = "block";
-
-    await loadEventsFromFirebase();
-  });
-} else {
-  loadEventsFromFirebase();
-}
+loadEventsFromFirebase();
