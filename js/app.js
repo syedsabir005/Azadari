@@ -101,50 +101,29 @@ function getFilteredEvents() {
 }
 
 function buildWhatsAppMessage(event) {
-  const speaker =
-    event.speaker.trim() || "To Be Announced";
+  const speaker = event.speaker.trim() || "To Be Announced";
 
-  const phoneSection =
-    event.phone.trim()
-      ? `
+  const phoneSection = event.phone.trim()
+    ? `Contact: ${event.phone}\n`
+    : "";
 
-• PHONE
-${event.phone}`
-      : "";
-
-  const notesSection =
-    event.notes.trim()
-      ? `
-
-• NOTES
-${event.notes}`
-      : "";
+  const notesSection = event.notes.trim()
+    ? `Notes: ${event.notes}\n`
+    : "";
 
   return `*${event.eventName}*
-
 ${event.venue}
 
---------------------------------
-
-• DAY
 ${formatDate(event.date)}
-
-• TIME
 ${formatTime(event.time)}
 
-• SPEAKER
-${speaker}
+Speaker: ${speaker}
 
-• ADDRESS
+Address:
 ${event.address}
 
-• HOST
-${event.host}${phoneSection}${notesSection}
-
---------------------------------
-
-*DFW HYDERABADI AZADARI*
-Moharram 2026 - 1448 Hijri`;
+Host: ${event.host}
+${phoneSection}${notesSection}
 }
 
 function getWhatsAppUrl(event) {
