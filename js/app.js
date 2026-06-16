@@ -492,4 +492,29 @@ if (importFile) {
   });
 }
 
+function initAddressAutocomplete() {
+  const addressInput = document.getElementById("address");
+
+  if (!addressInput || !window.google) {
+    return;
+  }
+
+  const autocomplete = new google.maps.places.Autocomplete(addressInput, {
+    types: ["address"],
+    componentRestrictions: {
+      country: "us"
+    }
+  });
+
+  autocomplete.addListener("place_changed", function () {
+    const place = autocomplete.getPlace();
+
+    if (place && place.formatted_address) {
+      addressInput.value = place.formatted_address;
+    }
+  });
+}
+
+window.initAddressAutocomplete = initAddressAutocomplete;
+
 renderEvents();
