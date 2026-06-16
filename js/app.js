@@ -197,11 +197,6 @@ function getFilteredEvents() {
 function buildWhatsAppMessage(event) {
   const speaker = event.speaker.trim() || "To Be Announced";
 
-  const majlisTitleSection =
-    event.majlisTitle && event.majlisTitle.trim()
-      ? `\n${event.majlisTitle}\n`
-      : "";
-
   const phoneSection = event.phone.trim()
     ? `Contact: ${event.phone}\n`
     : "";
@@ -210,11 +205,15 @@ function buildWhatsAppMessage(event) {
     ? `Notes: ${event.notes}\n`
     : "";
 
-  return `*${event.eventName}*
-${majlisTitleSection}
-${formatDateWithHijri(event)}
+  const weekdayDate = formatFullDate(event.date);
 
-Time: ${formatTime(event.time)}
+  return `*${event.eventName}*
+
+_${event.majlisTitle || ""}_
+
+*${weekdayDate}*
+*${event.hijriDate || ""}*
+*Time: ${formatTime(event.time)}*
 
 Speaker: ${speaker}
 
@@ -222,9 +221,7 @@ Address:
 ${event.address}
 
 Requested By: ${event.host}
-${phoneSection}${notesSection}
-DFW Hyderabadi Azadari
-Moharram 2026 - 1448 Hijri`;
+${phoneSection}${notesSection}`;
 }
 
 function getWhatsAppUrl(event) {
