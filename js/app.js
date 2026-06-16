@@ -190,7 +190,7 @@ function renderNextMajlis() {
   const speaker = nextEvent.speaker.trim() || "To Be Announced";
 
   nextMajlisSection.innerHTML = `
-    <div class="next-label">Upcoming Majlis</div>
+    <div class="next-label">Next Majlis</div>
 
     <div class="next-title">${nextEvent.eventName}</div>
     <div class="next-venue">${nextEvent.venue}</div>
@@ -246,8 +246,8 @@ function renderEvents() {
   sortedEvents.forEach((event) => {
     const originalIndex = events.indexOf(event);
     const speaker = event.speaker.trim() || "To Be Announced";
-
-    const phoneLine = event.phone.trim()
+    
+    const phoneLine = isAdminPage && event.phone.trim()
       ? `<div><strong>Phone:</strong> ${event.phone}</div>`
       : "";
 
@@ -270,7 +270,7 @@ function renderEvents() {
 
       <div class="compact-meta">
         <div><strong>Speaker:</strong> ${speaker}</div>
-        <div><strong>Host:</strong> ${event.host}</div>
+        ${isAdminPage ? `<div><strong>Host:</strong> ${event.host}</div>` : ""}
         <div><strong>Address:</strong> ${event.address}</div>
         ${phoneLine}
         ${notesLine}
