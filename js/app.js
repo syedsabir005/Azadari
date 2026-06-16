@@ -101,44 +101,49 @@ function getFilteredEvents() {
 }
 
 function buildWhatsAppMessage(event) {
-  const speaker = event.speaker.trim() || "To Be Announced";
+  const speaker =
+    event.speaker.trim() || "To Be Announced";
 
-  const phoneSection = event.phone.trim()
-    ? `
+  const phoneSection =
+    event.phone.trim()
+      ? `
 
-📞 *Phone*
+• PHONE
 ${event.phone}`
-    : "";
+      : "";
 
-  const notesSection = event.notes.trim()
-    ? `
+  const notesSection =
+    event.notes.trim()
+      ? `
 
-📝 *Notes*
+• NOTES
 ${event.notes}`
-    : "";
+      : "";
 
-  return `🕯️ *${event.eventName}*
+  return `*${event.eventName}*
 
-📍 *${event.venue}*
+${event.venue}
 
-📅 *Day*
+--------------------------------
+
+• DAY
 ${formatDate(event.date)}
 
-🕐 *Time*
+• TIME
 ${formatTime(event.time)}
 
-🎙️ *Speaker*
+• SPEAKER
 ${speaker}
 
-🏠 *Address*
+• ADDRESS
 ${event.address}
 
-👤 *Host*
+• HOST
 ${event.host}${phoneSection}${notesSection}
 
-────────────────
+--------------------------------
 
-DFW Hyderabadi Azadari
+*DFW HYDERABADI AZADARI*
 Moharram 2026 - 1448 Hijri`;
 }
 
