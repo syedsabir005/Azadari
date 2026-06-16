@@ -1,4 +1,4 @@
-import { db } from "./firebase.js";
+import { db, auth } from "./firebase.js";
 
 import {
   collection,
@@ -8,6 +8,24 @@ import {
   deleteDoc,
   doc
 } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+import {
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+const loginSection = document.getElementById("loginSection");
+const loginForm = document.getElementById("loginForm");
+const loginError = document.getElementById("loginError");
+const adminPanel = document.getElementById("adminPanel");
+const logoutButton = document.getElementById("logoutButton");
+
+const allowedAdmins = [
+  "syedsabir005@gmail.com",
+  "iamraza29@yahoo.com",
+  "mohammedali8027@gmail.com"
+];
 
 const COLLECTION_NAME = "majlis";
 
@@ -493,4 +511,55 @@ function initAddressAutocomplete() {
 
 window.initAddressAutocomplete = initAddressAutocomplete;
 
-loadEventsFromFirebase();
+if (isAdminPage) {
+  if (loginForm) {
+    loginForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value;
+
+      try {
+        loginError.textContent = "";
+
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+      } catch (error) {
+        loginError.textContent = error.code;
+        console.error("Firebase login error:", error);
+      }
+    });
+  }
+
+  if (logoutButton) {
+    logoutButton.addEventListener("click", async function () {
+      await signOut(auth);
+    });
+  }
+
+  onAuthStateChanged(auth, async function (user) {
+    const userEmail = user ? user.email.toLowerCase() : "";
+    
+    if (!user || !allowedAdmins.includes(userEmail)) {
+      if (loginSection) loginSection.style.display = "block";
+      if (adminPanel) adminPanel.style.display = "none";
+
+      if (user && !allowedAdmins.includes(userEmail)) {
+        loginError.textContent = "You are not authorized to access admin.";
+        await signOut(auth);
+      }
+
+      return;
+    }
+
+    if (loginSection) loginSection.style.display = "none";
+    if (adminPanel) adminPanel.style.display = "block";
+
+    await loadEventsFromFirebase();
+  });
+} else {
+  loadEventsFromFirebase();
+}
