@@ -102,11 +102,28 @@ textarea {
 .search-input {
   width: 100%;
   padding: 12px;
-  margin-bottom: 22px;
+  margin-bottom: 14px;
   border: 1px solid #bbb;
   border-radius: 8px;
   font-size: 15px;
   background: #fff;
+}
+
+.data-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.import-label {
+  background: #111;
+  color: #fff;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 15px;
+  cursor: pointer;
+  text-align: center;
+  flex: 1;
 }
 
 button,
@@ -124,8 +141,13 @@ button,
 }
 
 button:hover,
-.card-actions a:hover {
+.card-actions a:hover,
+.import-label:hover {
   background: #333;
+}
+
+.data-actions button {
+  flex: 1;
 }
 
 .event-card {
@@ -196,6 +218,7 @@ button:hover,
     padding: 0 12px;
   }
 
+  .data-actions,
   .card-actions {
     flex-direction: column;
   }

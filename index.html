@@ -117,6 +117,29 @@
         placeholder="Search by speaker, host, venue, address, or notes"
       />
 
+      <div class="data-actions">
+        <button
+          type="button"
+          id="exportButton"
+        >
+          Export JSON
+        </button>
+
+        <label
+          for="importFile"
+          class="import-label"
+        >
+          Import JSON
+        </label>
+
+        <input
+          type="file"
+          id="importFile"
+          accept=".json"
+          hidden
+        />
+      </div>
+
       <div id="eventsContainer"></div>
     </section>
 

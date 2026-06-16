@@ -1,6 +1,8 @@
 const form = document.getElementById("eventForm");
 const eventsContainer = document.getElementById("eventsContainer");
 const searchInput = document.getElementById("searchInput");
+const exportButton = document.getElementById("exportButton");
+const importFile = document.getElementById("importFile");
 
 let events = JSON.parse(localStorage.getItem("majalisEvents")) || [];
 let editingIndex = null;
@@ -285,6 +287,53 @@ function deleteEvent(index) {
   renderEvents();
 }
 
+function exportEvents() {
+  const data = JSON.stringify(events, null, 2);
+
+  const blob = new Blob([data], {
+    type: "application/json"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = "moharram-2026-majalis.json";
+  link.click();
+
+  URL.revokeObjectURL(url);
+}
+
+function importEvents(file) {
+  const reader = new FileReader();
+
+  reader.onload = function (event) {
+    try {
+      const importedEvents = JSON.parse(event.target.result);
+
+      if (!Array.isArray(importedEvents)) {
+        alert("Invalid JSON file.");
+        return;
+      }
+
+      events = importedEvents;
+      saveEvents();
+      resetForm();
+      renderEvents();
+
+      if (searchInput) {
+        searchInput.value = "";
+      }
+
+      alert("Majalis imported successfully.");
+    } catch (error) {
+      alert("Could not import JSON file.");
+    }
+  };
+
+  reader.readAsText(file);
+}
+
 form.addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -313,6 +362,23 @@ form.addEventListener("submit", function (e) {
 
 if (searchInput) {
   searchInput.addEventListener("input", renderEvents);
+}
+
+if (exportButton) {
+  exportButton.addEventListener("click", exportEvents);
+}
+
+if (importFile) {
+  importFile.addEventListener("change", function (e) {
+    const file = e.target.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    importEvents(file);
+    importFile.value = "";
+  });
 }
 
 renderEvents();
