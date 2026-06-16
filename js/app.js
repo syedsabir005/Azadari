@@ -28,7 +28,6 @@ const loginForm = document.getElementById("loginForm");
 const loginError = document.getElementById("loginError");
 const adminPanel = document.getElementById("adminPanel");
 const logoutButton = document.getElementById("logoutButton");
-
 const showAdminLoginButton = document.getElementById("showAdminLogin");
 
 const form = document.getElementById("eventForm");
@@ -54,17 +53,6 @@ async function loadEventsFromFirebase() {
   renderEvents();
 }
 
-function getOrdinal(day) {
-  if (day > 3 && day < 21) return day + "th";
-
-  switch (day % 10) {
-    case 1: return day + "st";
-    case 2: return day + "nd";
-    case 3: return day + "rd";
-    default: return day + "th";
-  }
-}
-
 function getMajlisCountText(count) {
   return count === 1
     ? "1 Majlis Scheduled"
@@ -80,9 +68,18 @@ function getSearchCountText(filteredCount, totalCount) {
 
 function formatDate(dateValue) {
   const date = new Date(dateValue + "T00:00:00");
+  const month = date.toLocaleDateString("en-US", { month: "long" });
+  const day = date.getDate();
+  const year = date.getFullYear();
+
+  return `${month} ${day}, ${year}`;
+}
+
+function formatFullDate(dateValue) {
+  const date = new Date(dateValue + "T00:00:00");
   const weekday = date.toLocaleDateString("en-US", { weekday: "long" });
   const month = date.toLocaleDateString("en-US", { month: "long" });
-  const day = getOrdinal(date.getDate());
+  const day = date.getDate();
   const year = date.getFullYear();
 
   return `${weekday}, ${month} ${day}, ${year}`;
@@ -99,6 +96,16 @@ function formatTime(timeValue) {
     hour: "numeric",
     minute: "2-digit"
   });
+}
+
+function formatDateWithHijri(event) {
+  const englishDate = formatDate(event.date);
+
+  if (event.hijriDate && event.hijriDate.trim()) {
+    return `${englishDate} | ${event.hijriDate}`;
+  }
+
+  return englishDate;
 }
 
 function formatAuditDate(value) {
@@ -137,7 +144,11 @@ function resetForm() {
   if (!form) return;
 
   form.reset();
+
   document.getElementById("eventName").value = "Annual Majlis";
+  document.getElementById("majlisTitle").value = "";
+  document.getElementById("hijriDate").value = "";
+
   editingIndex = null;
 
   const submitButton = form.querySelector("button[type='submit']");
@@ -167,6 +178,8 @@ function getFilteredEvents() {
   return events.filter((event) => {
     const searchableText = `
       ${event.eventName}
+      ${event.majlisTitle}
+      ${event.hijriDate}
       ${event.venue}
       ${event.date}
       ${event.time}
@@ -184,6 +197,11 @@ function getFilteredEvents() {
 function buildWhatsAppMessage(event) {
   const speaker = event.speaker.trim() || "To Be Announced";
 
+  const majlisTitleSection =
+    event.majlisTitle && event.majlisTitle.trim()
+      ? `\n${event.majlisTitle}\n`
+      : "";
+
   const phoneSection = event.phone.trim()
     ? `Contact: ${event.phone}\n`
     : "";
@@ -193,9 +211,9 @@ function buildWhatsAppMessage(event) {
     : "";
 
   return `*${event.eventName}*
-${event.venue}
+${majlisTitleSection}
+${formatDateWithHijri(event)}
 
-${formatDate(event.date)}
 Time: ${formatTime(event.time)}
 
 Speaker: ${speaker}
@@ -214,10 +232,82 @@ function getWhatsAppUrl(event) {
   return `https://wa.me/?text=${encodeURIComponent(message)}`;
 }
 
+function formatCalendarDateTime(event) {
+  const startDate = new Date(`${event.date}T${event.time}`);
+  const endDate = new Date(startDate);
+
+  endDate.setHours(endDate.getHours() + 2);
+
+  function toGoogleCalendarString(date) {
+    return date
+      .toISOString()
+      .replace(/[-:]/g, "")
+      .split(".")[0] + "Z";
+  }
+
+  return {
+    startDate,
+    endDate,
+    googleStart: toGoogleCalendarString(startDate),
+    googleEnd: toGoogleCalendarString(endDate)
+  };
+}
+
+function getCalendarTitle(event) {
+  return event.majlisTitle && event.majlisTitle.trim()
+    ? event.majlisTitle
+    : event.eventName;
+}
+
+function getCalendarDetails(event) {
+  const speaker = event.speaker && event.speaker.trim()
+    ? event.speaker
+    : "To Be Announced";
+
+  return `Event: ${event.eventName}
+Date: ${formatDateWithHijri(event)}
+Time: ${formatTime(event.time)}
+Speaker: ${speaker}
+Host: ${event.host || ""}
+DFW Hyderabadi Azadari`;
+}
+
+function getGoogleCalendarUrl(event) {
+  const dateTime = formatCalendarDateTime(event);
+
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(getCalendarTitle(event))}&dates=${dateTime.googleStart}/${dateTime.googleEnd}&details=${encodeURIComponent(getCalendarDetails(event))}&location=${encodeURIComponent(event.address)}`;
+}
+
+function getICalendarUrl(event) {
+  const dateTime = formatCalendarDateTime(event);
+
+  const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//DFW Hyderabadi Azadari//Majalis Schedule//EN
+BEGIN:VEVENT
+UID:${event.id || Date.now()}@dfwhyderabadiazadari
+DTSTAMP:${dateTime.googleStart}
+DTSTART:${dateTime.googleStart}
+DTEND:${dateTime.googleEnd}
+SUMMARY:${getCalendarTitle(event)}
+DESCRIPTION:${getCalendarDetails(event).replace(/\n/g, "\\n")}
+LOCATION:${event.address}
+END:VEVENT
+END:VCALENDAR`;
+
+  const blob = new Blob([icsContent], {
+    type: "text/calendar"
+  });
+
+  return URL.createObjectURL(blob);
+}
+
 function getActionButtons(event, originalIndex, includeAdminButtons) {
   const mapUrl =
     `https://maps.google.com/?q=${encodeURIComponent(event.address)}`;
   const whatsappUrl = getWhatsAppUrl(event);
+  const googleCalendarUrl = getGoogleCalendarUrl(event);
+  const iCalendarUrl = getICalendarUrl(event);
 
   const callButton = event.phone.trim()
     ? `<a href="tel:${cleanPhone(event.phone)}">Call</a>`
@@ -235,6 +325,8 @@ function getActionButtons(event, originalIndex, includeAdminButtons) {
       <a href="${mapUrl}" target="_blank">Directions</a>
       ${callButton}
       <a href="${whatsappUrl}" target="_blank">WhatsApp</a>
+      <a href="${googleCalendarUrl}" target="_blank">Google Calendar</a>
+      <a href="${iCalendarUrl}" download="${getCalendarTitle(event)}.ics">iCal</a>
       ${adminButtons}
     </div>
   `;
@@ -258,17 +350,24 @@ function renderNextMajlis() {
   const originalIndex = events.indexOf(nextEvent);
   const speaker = nextEvent.speaker.trim() || "To Be Announced";
 
+  const majlisTitleHtml =
+    nextEvent.majlisTitle && nextEvent.majlisTitle.trim()
+      ? `<div class="event-subtitle">${nextEvent.majlisTitle}</div>`
+      : "";
+
   nextMajlisSection.innerHTML = `
     <div class="next-label">Next Majlis</div>
 
-    <div class="next-title">${nextEvent.eventName}</div>
-    <div class="next-venue">${nextEvent.venue}</div>
+    <div class="next-title">
+      ${nextEvent.majlisTitle || nextEvent.eventName}
+    </div>
 
     <div class="compact-date-line">
-      ${formatDate(nextEvent.date)} • ${formatTime(nextEvent.time)}
+      ${formatDateWithHijri(nextEvent)}
     </div>
 
     <div class="compact-meta">
+      <div><strong>Time:</strong> ${formatTime(nextEvent.time)}</div>
       <div><strong>Speaker:</strong> ${speaker}</div>
       <div><strong>Address:</strong> ${nextEvent.address}</div>
     </div>
@@ -280,6 +379,11 @@ function renderNextMajlis() {
 function buildEventCard(event, includeAdminTools) {
   const originalIndex = events.indexOf(event);
   const speaker = event.speaker.trim() || "To Be Announced";
+
+  const majlisTitleHtml =
+    event.majlisTitle && event.majlisTitle.trim()
+      ? `<div class="event-subtitle">${event.majlisTitle}</div>`
+      : "";
 
   const phoneLine = includeAdminTools && event.phone.trim()
     ? `<div><strong>Phone:</strong> ${event.phone}</div>`
@@ -313,15 +417,25 @@ function buildEventCard(event, includeAdminTools) {
   const card = document.createElement("div");
   card.className = "event-card compact-event-card";
 
-  card.innerHTML = `
+  const publicTitleHtml =
+    event.majlisTitle && event.majlisTitle.trim()
+      ? `<div class="event-title">${event.majlisTitle}</div>`
+      : `<div class="event-title">${event.eventName}</div>`;
+
+  const adminTitleHtml = `
     <div class="event-title">${event.eventName}</div>
-    <div class="event-venue">${event.venue}</div>
+    ${majlisTitleHtml}
+  `;
+
+  card.innerHTML = `
+    ${includeAdminTools ? adminTitleHtml : publicTitleHtml}
 
     <div class="compact-date-line">
-      ${formatDate(event.date)} • ${formatTime(event.time)}
+      ${formatDateWithHijri(event)}
     </div>
 
     <div class="compact-meta">
+      <div><strong>Time:</strong> ${formatTime(event.time)}</div>
       <div><strong>Speaker:</strong> ${speaker}</div>
       ${hostLine}
       <div><strong>Address:</strong> ${event.address}</div>
@@ -404,6 +518,8 @@ window.editEvent = function editEvent(index) {
   const event = events[index];
 
   document.getElementById("eventName").value = event.eventName;
+  document.getElementById("majlisTitle").value = event.majlisTitle || "";
+  document.getElementById("hijriDate").value = event.hijriDate || "";
   document.getElementById("venue").value = event.venue;
   document.getElementById("date").value = event.date;
   document.getElementById("time").value = event.time;
@@ -485,6 +601,8 @@ async function importEvents(file) {
       for (const item of importedEvents) {
         const cleanItem = {
           eventName: item.eventName || "",
+          majlisTitle: item.majlisTitle || "",
+          hijriDate: item.hijriDate || "",
           venue: item.venue || "",
           date: item.date || "",
           time: item.time || "",
@@ -529,6 +647,8 @@ if (form) {
 
     const eventData = {
       eventName: document.getElementById("eventName").value,
+      majlisTitle: document.getElementById("majlisTitle").value,
+      hijriDate: document.getElementById("hijriDate").value,
       venue: document.getElementById("venue").value,
       date: document.getElementById("date").value,
       time: document.getElementById("time").value,
