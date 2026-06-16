@@ -232,6 +232,14 @@ function getWhatsAppUrl(event) {
   return `https://wa.me/?text=${encodeURIComponent(message)}`;
 }
 
+function copyInvite(event) {
+  navigator.clipboard.writeText(
+    buildWhatsAppMessage(event)
+  );
+
+  alert("Invite copied to clipboard");
+}
+
 function formatCalendarDateTime(event) {
   const startDate = new Date(`${event.date}T${event.time}`);
   const endDate = new Date(startDate);
@@ -325,6 +333,14 @@ function getActionButtons(event, originalIndex, includeAdminButtons) {
       <a href="${mapUrl}" target="_blank">Directions</a>
       ${callButton}
       <a href="${whatsappUrl}" target="_blank">WhatsApp</a>
+
+      <button
+        type="button"
+        onclick="copyInvite(${originalIndex})"
+      >
+        Copy Invite
+      </button>
+
       <a href="${googleCalendarUrl}" target="_blank">Google Calendar</a>
       <a href="${iCalendarUrl}" download="${getCalendarTitle(event)}.ics">iCal</a>
       ${adminButtons}
@@ -548,6 +564,26 @@ window.editEvent = function editEvent(index) {
     top: form.offsetTop - 20,
     behavior: "smooth"
   });
+};
+
+window.copyInvite = function copyInviteButton(index) {
+  const event = events[index];
+
+  navigator.clipboard.writeText(
+    buildWhatsAppMessage(event)
+  );
+
+  alert("Invite copied to clipboard");
+};
+
+window.copyInvite = function copyInvite(index) {
+  const event = events[index];
+
+  navigator.clipboard.writeText(
+    buildWhatsAppMessage(event)
+  );
+
+  alert("Invite copied to clipboard");
 };
 
 window.deleteEvent = async function deleteEvent(index) {
