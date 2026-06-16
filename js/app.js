@@ -115,14 +115,14 @@ function buildWhatsAppMessage(event) {
 ${event.venue}
 
 ${formatDate(event.date)}
-${formatTime(event.time)}
+Time: ${formatTime(event.time)}
 
 Speaker: ${speaker}
 
 Address:
 ${event.address}
 
-Host: ${event.host}
+Requested By: ${event.host}
 ${phoneSection}${notesSection}
 DFW Hyderabadi Azadari
 Moharram 2026 - 1448 Hijri`;
