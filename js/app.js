@@ -102,33 +102,44 @@ function getFilteredEvents() {
 
 function buildWhatsAppMessage(event) {
   const speaker = event.speaker.trim() || "To Be Announced";
-  const notes = event.notes.trim()
-    ? `\nNotes:\n${event.notes}\n`
+
+  const phoneSection = event.phone.trim()
+    ? `
+
+📞 *Phone*
+${event.phone}`
     : "";
 
-  return `
-${event.eventName}
-${event.venue}
+  const notesSection = event.notes.trim()
+    ? `
 
-Day:
+📝 *Notes*
+${event.notes}`
+    : "";
+
+  return `🕯️ *${event.eventName}*
+
+📍 *${event.venue}*
+
+📅 *Day*
 ${formatDate(event.date)}
 
-Time:
+🕐 *Time*
 ${formatTime(event.time)}
 
-Speaker:
+🎙️ *Speaker*
 ${speaker}
 
-Address:
+🏠 *Address*
 ${event.address}
 
-Host:
-${event.host}
+👤 *Host*
+${event.host}${phoneSection}${notesSection}
 
-${event.phone.trim() ? `Phone:\n${event.phone}\n` : ""}${notes}
+────────────────
+
 DFW Hyderabadi Azadari
-Moharram 2026 - 1448 Hijri
-`.trim();
+Moharram 2026 - 1448 Hijri`;
 }
 
 function getWhatsAppUrl(event) {
