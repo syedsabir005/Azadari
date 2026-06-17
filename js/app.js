@@ -439,7 +439,7 @@ function renderNextMajlis() {
 
   nextMajlisSection.innerHTML = `
     <div class="next-top-row">
-      <div class="next-indicator">NEXT MAJLIS</div>
+      <div class="next-indicator">Next Majlis</div>
       <div class="countdown" id="countdown"></div>
     </div>
 
@@ -449,20 +449,20 @@ function renderNextMajlis() {
 
     ${
       nextEvent.majlisTitle && nextEvent.majlisTitle.trim()
-        ? `<div class="event-subtitle">${nextEvent.majlisTitle}</div>`
-        : ""  
+        ? `<div class="next-subtitle">${nextEvent.majlisTitle}</div>`
+        : ""
     }
 
-    <div class="compact-date-line">
+    <div class="next-date-line">
       ${formatDisplayDate(nextEvent)}
     </div>
 
-    <div class="compact-meta">
+    <div class="next-meta">
       <div><strong>Time:</strong> ${formatTime(nextEvent.time)}</div>
       ${speaker ? `<div><strong>Speaker:</strong> ${speaker}</div>` : ""}
       ${
         nextEvent.host && nextEvent.host.trim()
-          ? `<div class="requested-line"><strong>Requested By:</strong> ${nextEvent.host.trim()}</div>`
+          ? `<div><strong>Requested By:</strong> ${nextEvent.host.trim()}</div>`
           : ""
       }
       <div><strong>Address:</strong> ${nextEvent.address}</div>

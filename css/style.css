@@ -596,3 +596,61 @@ button:hover,
   font-weight: 600;
   color: #111;
 }
+
+.next-indicator {
+  font-size: 13px;
+  font-weight: 700;
+  color: #666;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.next-subtitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: #555;
+  margin-top: 2px;
+  margin-bottom: 12px;
+}
+
+.next-date-line {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+  margin: 10px 0 16px;
+  line-height: 1.45;
+}
+
+.next-meta {
+  font-size: 16px;
+  line-height: 1.65;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+.next-meta div {
+  margin-bottom: 5px;
+}
+
+@media (max-width: 600px) {
+  .next-indicator {
+    font-size: 12px;
+  }
+
+  .next-title {
+    font-size: 22px;
+  }
+
+  .next-subtitle {
+    font-size: 16px;
+  }
+
+  .next-date-line {
+    font-size: 14px;
+  }
+
+  .next-meta {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+}
