@@ -61,45 +61,16 @@ body {
 
 .next-majlis-section {
   background: #fafafa;
-  border-left: 5px solid #111;
+  border-left: 6px solid #111;
 }
 
 .next-majlis-section:empty {
   display: none;
 }
 
-.next-label {
-  font-size: 13px;
-  font-weight: 700;
-  color: #666;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-}
-
-.next-title {
-  font-size: 28px;
-  font-weight: 700;
-  margin: 8px 0 6px;
-  line-height: 1.2;
-}
-
-.next-venue {
-  font-size: 18px;
-  color: #555;
-  margin-bottom: 8px;
-}
-
 h2 {
   margin-top: 0;
   margin-bottom: 20px;
-}
-
-#majlisCount {
-  margin-top: -10px;
-  margin-bottom: 20px;
-  color: #666;
-  font-size: 14px;
 }
 
 form {
@@ -185,68 +156,73 @@ button:hover,
 }
 
 .event-card {
-  background: #fff;
-  border-radius: 12px;
+  background: #fcfcfc;
+  border-radius: 16px;
   padding: 20px;
-  margin-bottom: 18px;
-  border-left: 5px solid #111;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 24px;
+  border: 1px solid #e5e5e5;
+  border-left: 6px solid #111;
+  box-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.04),
+    0 1px 3px rgba(0, 0, 0, 0.03);
 }
 
-.event-subtitle {
-  font-size: 17px;
+.events-section .event-card:last-child {
+  margin-bottom: 0;
+}
+
+.event-title,
+.next-title {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 8px 0 6px;
+}
+
+.event-subtitle,
+.next-subtitle {
+  font-size: 18px;
   font-weight: 600;
   color: #555;
-  margin-top: 4px;
-  margin-bottom: 8px;
+  margin-top: 2px;
+  margin-bottom: 12px;
 }
 
-.event-title {
-  font-size: 23px;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-
-.event-venue {
-  font-size: 17px;
-  color: #555;
-  margin-bottom: 8px;
-}
-
-.compact-date-line {
-  margin: 12px 0;
+.compact-date-line,
+.next-date-line {
+  display: inline-block;
+  background: #f3f3f3;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 16px;
   font-weight: 700;
   color: #111;
-  font-size: 15px;
+  margin: 10px 0 16px;
+  line-height: 1.4;
 }
 
-.compact-meta {
+.compact-meta,
+.next-meta {
+  font-size: 16px;
   line-height: 1.6;
-  margin-bottom: 16px;
   color: #333;
+  margin-bottom: 16px;
 }
 
-.compact-meta div {
-  margin-bottom: 4px;
+.compact-meta div,
+.next-meta div {
+  margin-bottom: 5px;
 }
 
-.compact-meta strong {
+.compact-meta strong,
+.next-meta strong {
   font-weight: 700;
 }
 
-.compact-event-card {
-  padding: 18px;
-}
-
-.event-row {
-  margin-bottom: 14px;
-  line-height: 1.5;
-}
-
-.event-label {
-  font-weight: 700;
-  display: block;
-  margin-bottom: 4px;
+.requested-line {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111;
 }
 
 .card-actions {
@@ -305,185 +281,6 @@ button:hover,
   color: #666;
 }
 
-@media (max-width: 600px) {
-  body {
-    background: #f2f2f2;
-  }
-
-  .site-header {
-    padding: 22px 16px;
-  }
-
-  .site-logo {
-    width: 82px;
-    max-width: 82px;
-    margin-bottom: 12px;
-  }
-
-  .site-header h1 {
-    font-size: 21px;
-    line-height: 1.25;
-    letter-spacing: 1px;
-  }
-
-  .site-header p {
-    font-size: 12px;
-    line-height: 1.4;
-    letter-spacing: 0.5px;
-  }
-
-  .container {
-    padding: 0 12px;
-    margin: 18px auto;
-  }
-
-  .form-section,
-  .events-section,
-  .next-majlis-section,
-  .welcome-section,
-  .calendar-strip-section {
-    padding: 16px;
-    margin-bottom: 16px;
-    border-radius: 14px;
-  }
-
-  .welcome-section h2,
-  .events-section h2 {
-    font-size: 21px;
-    margin-bottom: 10px;
-  }
-
-  .welcome-section p {
-    font-size: 14px;
-    line-height: 1.55;
-  }
-
-  .calendar-strip {
-    gap: 8px;
-  }
-
-  .calendar-date {
-    min-width: 64px;
-    padding: 9px 8px;
-    border-radius: 10px;
-  }
-
-  .next-majlis-section {
-    border-left: 6px solid #111;
-  }
-
-  .next-label {
-    font-size: 12px;
-    margin-bottom: 12px;
-  }
-
-  .next-title {
-    font-size: 22px;
-    line-height: 1.25;
-    margin-bottom: 6px;
-  }
-
-  .countdown {
-    font-size: 13px;
-    padding: 7px 12px;
-    margin: 8px 0 16px;
-  }
-
-  .event-card {
-    padding: 16px;
-    margin-bottom: 16px;
-    border-radius: 14px;
-    border-left: 6px solid #111;
-  }
-
-  .event-title {
-    font-size: 22px;
-    line-height: 1.25;
-    margin-bottom: 6px;
-  }
-
-  .event-subtitle {
-    font-size: 16px;
-    line-height: 1.3;
-    margin-top: 2px;
-    margin-bottom: 8px;
-  }
-
-  .compact-date-line {
-    font-size: 14px;
-    line-height: 1.45;
-    margin: 8px 0 12px;
-  }
-
-  .compact-meta {
-    font-size: 14px;
-    line-height: 1.55;
-    margin-bottom: 14px;
-  }
-
-  .compact-meta div {
-    margin-bottom: 4px;
-  }
-
-  .admin-note {
-    font-size: 14px;
-    line-height: 1.5;
-    padding: 14px;
-  }
-
-  .public-count {
-    font-size: 15px;
-    margin-bottom: 12px;
-  }
-
-  .search-input {
-    font-size: 15px;
-    padding: 13px;
-    margin-bottom: 18px;
-  }
-
-  .card-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-
-  .card-actions a,
-  .card-actions button {
-    width: 100%;
-    min-width: 0;
-    padding: 10px 8px;
-    font-size: 14px;
-    min-height: 42px;
-    border-radius: 10px;
-  }
-
-  .data-actions {
-    flex-direction: column;
-  }
-
-  .past-actions button {
-    width: 100%;
-    padding: 12px;
-    font-size: 15px;
-  }
-
-  .floating-whatsapp {
-    right: 12px;
-    bottom: 12px;
-    padding: 10px 14px;
-    font-size: 13px;
-  }
-    .next-top-row {
-    align-items: flex-start;
-  }
-
-  .requested-line {
-    font-size: 14px;
-    font-weight: 600;
-  }
-}
-
 .past-actions {
   margin-top: 20px;
   text-align: left;
@@ -497,7 +294,7 @@ button:hover,
 
 .countdown {
   display: inline-block;
-  margin: 8px 0 14px;
+  margin: 0;
   padding: 7px 14px;
   border-radius: 999px;
   background: #f1f1f1;
@@ -508,12 +305,6 @@ button:hover,
 
 .floating-whatsapp {
   display: none;
-}
-
-@media (max-width: 768px) {
-  .floating-whatsapp {
-    display: none;
-  }
 }
 
 .public-count {
@@ -534,7 +325,8 @@ button:hover,
   color: #444;
 }
 
-.calendar-strip-title {
+.calendar-strip-title,
+.next-indicator {
   font-size: 13px;
   font-weight: 700;
   color: #666;
@@ -582,75 +374,149 @@ button:hover,
   margin-bottom: 10px;
 }
 
-.next-top-row .countdown {
-  margin: 0;
-}
-
-.compact-date-line {
-  font-size: 16px;
-  line-height: 1.45;
-}
-
-.requested-line {
-  font-size: 16px;
-  font-weight: 600;
-  color: #111;
-}
-
-.next-indicator {
-  font-size: 13px;
-  font-weight: 700;
-  color: #666;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-.next-subtitle {
-  font-size: 18px;
-  font-weight: 600;
-  color: #555;
-  margin-top: 2px;
-  margin-bottom: 12px;
-}
-
-.next-date-line {
-  font-size: 16px;
-  font-weight: 700;
-  color: #111;
-  margin: 10px 0 16px;
-  line-height: 1.45;
-}
-
-.next-meta {
-  font-size: 16px;
-  line-height: 1.65;
-  color: #333;
-  margin-bottom: 16px;
-}
-
-.next-meta div {
-  margin-bottom: 5px;
-}
-
 @media (max-width: 600px) {
+  body {
+    background: #f2f2f2;
+  }
+
+  .site-header {
+    padding: 20px 14px;
+  }
+
+  .site-logo {
+    width: 76px;
+    max-width: 76px;
+    margin-bottom: 12px;
+  }
+
+  .site-header h1 {
+    font-size: 21px;
+    line-height: 1.25;
+    letter-spacing: 1px;
+  }
+
+  .site-header p {
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: 0.5px;
+  }
+
+  .container {
+    padding: 0 12px;
+    margin: 18px auto;
+  }
+
+  .form-section,
+  .events-section,
+  .next-majlis-section,
+  .welcome-section,
+  .calendar-strip-section {
+    padding: 16px;
+    margin-bottom: 16px;
+    border-radius: 14px;
+  }
+
+  .welcome-section h2,
+  .events-section h2 {
+    font-size: 21px;
+    margin-bottom: 10px;
+  }
+
+  .welcome-section p {
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .calendar-date {
+    min-width: 62px;
+    padding: 9px 8px;
+    border-radius: 10px;
+  }
+
+  .next-top-row {
+    align-items: flex-start;
+  }
+
   .next-indicator {
     font-size: 12px;
   }
 
+  .event-title,
   .next-title {
     font-size: 22px;
+    line-height: 1.25;
+    margin-bottom: 6px;
   }
 
+  .event-subtitle,
   .next-subtitle {
     font-size: 16px;
+    line-height: 1.3;
+    margin-top: 2px;
+    margin-bottom: 8px;
   }
 
+  .compact-date-line,
   .next-date-line {
-    font-size: 14px;
+    font-size: 13px;
+    line-height: 1.4;
+    padding: 5px 10px;
+    margin: 8px 0 12px;
   }
 
+  .compact-meta,
   .next-meta {
     font-size: 14px;
-    line-height: 1.55;
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
+
+  .compact-meta div,
+  .next-meta div {
+    margin-bottom: 4px;
+  }
+
+  .requested-line {
+    font-size: 14px;
+  }
+
+  .event-card {
+    padding: 16px;
+    margin-bottom: 18px;
+    border-radius: 14px;
+    border-left: 6px solid #111;
+  }
+
+  .public-count {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+
+  .card-actions {
+    gap: 10px;
+  }
+
+  .card-actions a,
+  .card-actions button {
+    padding: 10px 8px;
+    font-size: 14px;
+    min-height: 42px;
+    border-radius: 10px;
+  }
+
+  .past-actions button {
+    width: 100%;
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  .admin-note {
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 14px;
+  }
+
+  .floating-whatsapp {
+    display: none;
   }
 }
