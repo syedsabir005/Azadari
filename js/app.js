@@ -40,6 +40,8 @@ const nextMajlisSection = document.getElementById("nextMajlisSection");
 const showPastButton = document.getElementById("showPastButton");
 const pastMajalisSection = document.getElementById("pastMajalisSection");
 const pastEventsContainer = document.getElementById("pastEventsContainer");
+const publicSearchInput = document.getElementById("publicSearchInput");
+const publicMajlisCount = document.getElementById("publicMajlisCount");
 
 let events = [];
 let editingIndex = null;
@@ -354,6 +356,7 @@ function getActionButtons(event, originalIndex, includeAdminButtons) {
   return `
     <div class="card-actions">
       <a href="${mapUrl}" target="_blank">Directions</a>
+        
       ${callButton}
       <a href="${whatsappUrl}" target="_blank">WhatsApp</a>
 
@@ -536,6 +539,33 @@ function buildEventCard(event, includeAdminTools) {
   return card;
 }
 
+function getPublicFilteredEvents(eventList) {
+  const searchTerm = publicSearchInput
+    ? publicSearchInput.value.trim().toLowerCase()
+    : "";
+
+  if (!searchTerm) {
+    return eventList;
+  }
+
+  return eventList.filter((event) => {
+    const searchableText = `
+      ${event.eventName || ""}
+      ${event.majlisTitle || ""}
+      ${event.hijriDate || ""}
+      ${event.venue || ""}
+      ${event.date || ""}
+      ${event.time || ""}
+      ${event.speaker || ""}
+      ${event.address || ""}
+      ${event.host || ""}
+      ${event.notes || ""}
+    `.toLowerCase();
+
+    return searchableText.includes(searchTerm);
+  });
+}
+
 function renderPublicEvents() {
   if (!publicEventsContainer) return;
 
@@ -555,11 +585,30 @@ function renderPublicEvents() {
     return getEventDateTime(event) < now;
   });
 
+  const filteredUpcomingEvents =
+    getPublicFilteredEvents(upcomingEvents);
+
+  if (publicMajlisCount) {
+    const upcomingWord =
+      filteredUpcomingEvents.length === 1 ? "Majlis" : "Majalis";
+
+    if (publicSearchInput && publicSearchInput.value.trim()) {
+      publicMajlisCount.textContent =
+        `${filteredUpcomingEvents.length} Upcoming ${upcomingWord} Found`;
+    } else {
+      publicMajlisCount.textContent =
+        `${upcomingEvents.length} Upcoming ${upcomingEvents.length === 1 ? "Majlis" : "Majalis"}`;
+    }
+  }
+
   if (upcomingEvents.length === 0) {
     publicEventsContainer.innerHTML =
       '<p class="empty-message">No upcoming Majalis.</p>';
+  } else if (filteredUpcomingEvents.length === 0) {
+    publicEventsContainer.innerHTML =
+      '<p class="empty-message">No matching upcoming Majalis found.</p>';
   } else {
-    upcomingEvents.forEach((event) => {
+    filteredUpcomingEvents.forEach((event) => {
       publicEventsContainer.appendChild(
         buildEventCard(event, false)
       );
@@ -817,6 +866,10 @@ if (form) {
 
 if (searchInput) {
   searchInput.addEventListener("input", renderAdminEvents);
+}
+
+if (publicSearchInput) {
+  publicSearchInput.addEventListener("input", renderPublicEvents);
 }
 
 if (exportButton) {
