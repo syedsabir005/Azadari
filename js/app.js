@@ -440,7 +440,7 @@ function renderCountdown(event) {
     );
 
     countdownElement.textContent =
-      `Starts in ${days} Days ${hours} Hours ${minutes} Minutes`;
+        `Starts in ${days}d ${hours}h ${minutes}m`;
   }
 
   updateCountdown();
