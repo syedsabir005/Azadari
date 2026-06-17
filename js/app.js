@@ -401,9 +401,10 @@ function renderNextMajlis() {
       ${nextEvent.majlisTitle || nextEvent.eventName}
     </div>
 
-    <div class="compact-date-line">
+    <div class="countdown" id="countdown"></div>
       ${formatDateWithHijri(nextEvent)}
     </div>
+    <div class="countdown" id="countdown"></div>
 
     <div class="compact-meta">
       <div><strong>Time:</strong> ${formatTime(nextEvent.time)}</div>
@@ -413,6 +414,8 @@ function renderNextMajlis() {
 
     ${getActionButtons(nextEvent, originalIndex, false)}
   `;
+
+renderCountdown(nextEvent);
 }
 
 function buildEventCard(event, includeAdminTools) {
