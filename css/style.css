@@ -238,16 +238,16 @@ button:hover,
 }
 
 .card-actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
   margin-top: 16px;
 }
 
 .card-actions a,
 .card-actions button {
-  flex: 1 1 120px;
-  padding: 9px 12px;
+  width: 100%;
+  padding: 10px 12px;
   font-size: 14px;
   min-height: 42px;
 }
@@ -396,4 +396,12 @@ button:hover,
     padding: 10px 14px;
     font-size: 13px;
   }
+}
+
+.public-count {
+  margin-top: -8px;
+  margin-bottom: 14px;
+  color: #666;
+  font-size: 14px;
+  font-weight: 600;
 }
