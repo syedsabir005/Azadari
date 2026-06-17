@@ -37,6 +37,9 @@ const searchInput = document.getElementById("searchInput");
 const exportButton = document.getElementById("exportButton");
 const importFile = document.getElementById("importFile");
 const nextMajlisSection = document.getElementById("nextMajlisSection");
+const showPastButton = document.getElementById("showPastButton");
+const pastMajalisSection = document.getElementById("pastMajalisSection");
+const pastEventsContainer = document.getElementById("pastEventsContainer");
 
 let events = [];
 let editingIndex = null;
@@ -106,6 +109,37 @@ function formatDateWithHijri(event) {
   }
 
   return englishDate;
+}
+
+async function populateHijriDate() {
+  const dateInput = document.getElementById("date");
+  const hijriInput = document.getElementById("hijriDate");
+
+  if (!dateInput || !hijriInput || !dateInput.value) {
+    return;
+  }
+
+  const [year, month, day] = dateInput.value.split("-");
+  const formattedDate = `${day}-${month}-${year}`;
+
+  try {
+    const response = await fetch(
+      `https://api.aladhan.com/v1/gToH?date=${formattedDate}`
+    );
+
+    const data = await response.json();
+
+    if (!data || !data.data || !data.data.hijri) {
+      return;
+    }
+
+    const hijri = data.data.hijri;
+
+    hijriInput.value =
+      `${hijri.day} ${hijri.month.en} ${hijri.year}H`;
+  } catch (error) {
+    console.error("Unable to fetch Hijri date", error);
+  }
 }
 
 function formatAuditDate(value) {
@@ -227,14 +261,6 @@ ${phoneSection}${notesSection}`;
 function getWhatsAppUrl(event) {
   const message = buildWhatsAppMessage(event);
   return `https://wa.me/?text=${encodeURIComponent(message)}`;
-}
-
-function copyInvite(event) {
-  navigator.clipboard.writeText(
-    buildWhatsAppMessage(event)
-  );
-
-  alert("Invite copied to clipboard");
 }
 
 function formatCalendarDateTime(event) {
@@ -392,6 +418,7 @@ function renderNextMajlis() {
 function buildEventCard(event, includeAdminTools) {
   const originalIndex = events.indexOf(event);
   const speaker = event.speaker.trim() || "To Be Announced";
+  const isPastEvent = getEventDateTime(event) < new Date();
 
   const majlisTitleHtml =
     event.majlisTitle && event.majlisTitle.trim()
@@ -427,9 +454,6 @@ function buildEventCard(event, includeAdminTools) {
     `
     : "";
 
-  const card = document.createElement("div");
-  card.className = "event-card compact-event-card";
-
   const publicTitleHtml =
     event.majlisTitle && event.majlisTitle.trim()
       ? `<div class="event-title">${event.majlisTitle}</div>`
@@ -440,8 +464,24 @@ function buildEventCard(event, includeAdminTools) {
     ${majlisTitleHtml}
   `;
 
+  const publicPastButtons = isPastEvent && !includeAdminTools
+    ? `
+      <div class="card-actions">
+        <button
+          type="button"
+          onclick="copyInvite(${originalIndex})"
+        >
+          Copy Invite
+        </button>
+      </div>
+    `
+    : getActionButtons(event, originalIndex, includeAdminTools);
+
+  const card = document.createElement("div");
+  card.className = "event-card compact-event-card";
+
   card.innerHTML = `
-    ${includeAdminTools ? adminTitleHtml : publicTitleHtml}
+      ${includeAdminTools ? adminTitleHtml : publicTitleHtml}
 
     <div class="compact-date-line">
       ${formatDateWithHijri(event)}
@@ -458,7 +498,7 @@ function buildEventCard(event, includeAdminTools) {
 
     ${auditHtml}
 
-    ${getActionButtons(event, originalIndex, includeAdminTools)}
+    ${publicPastButtons}
   `;
 
   return card;
@@ -469,17 +509,53 @@ function renderPublicEvents() {
 
   publicEventsContainer.innerHTML = "";
 
-  if (events.length === 0) {
-    publicEventsContainer.innerHTML =
-      '<p class="empty-message">No Majalis added yet.</p>';
-    return;
+  if (pastEventsContainer) {
+    pastEventsContainer.innerHTML = "";
   }
 
-  getSortedEvents(events).forEach((event) => {
-    publicEventsContainer.appendChild(
-      buildEventCard(event, false)
-    );
+  const now = new Date();
+
+  const upcomingEvents = getSortedEvents(events).filter((event) => {
+    return getEventDateTime(event) >= now;
   });
+
+  const pastEvents = getSortedEvents(events).filter((event) => {
+    return getEventDateTime(event) < now;
+  });
+
+  if (upcomingEvents.length === 0) {
+    publicEventsContainer.innerHTML =
+      '<p class="empty-message">No upcoming Majalis.</p>';
+  } else {
+    upcomingEvents.forEach((event) => {
+      publicEventsContainer.appendChild(
+        buildEventCard(event, false)
+      );
+    });
+  }
+
+  if (pastEventsContainer) {
+    if (pastEvents.length === 0) {
+      pastEventsContainer.innerHTML =
+        '<p class="empty-message">No past Majalis.</p>';
+    } else {
+      pastEvents.forEach((event) => {
+        pastEventsContainer.appendChild(
+          buildEventCard(event, false)
+        );
+      });
+    }
+  }
+
+  if (showPastButton) {
+    showPastButton.style.display =
+      pastEvents.length > 0 ? "inline-block" : "none";
+
+    showPastButton.textContent =
+      pastEvents.length === 1
+        ? "Show Past Majlis (1)"
+        : `Show Past Majalis (${pastEvents.length})`;
+  }
 }
 
 function renderAdminEvents() {
@@ -561,16 +637,6 @@ window.editEvent = function editEvent(index) {
     top: form.offsetTop - 20,
     behavior: "smooth"
   });
-};
-
-window.copyInvite = function copyInviteButton(index) {
-  const event = events[index];
-
-  navigator.clipboard.writeText(
-    buildWhatsAppMessage(event)
-  );
-
-  alert("Invite copied to clipboard");
 };
 
 window.copyInvite = function copyInvite(index) {
@@ -736,6 +802,12 @@ if (importFile) {
   });
 }
 
+const dateInput = document.getElementById("date");
+
+if (dateInput) {
+  dateInput.addEventListener("change", populateHijriDate);
+}
+
 if (loginForm) {
   loginForm.addEventListener("submit", async function (e) {
     e.preventDefault();
@@ -826,5 +898,29 @@ function initAddressAutocomplete() {
 }
 
 window.initAddressAutocomplete = initAddressAutocomplete;
+
+if (showPastButton) {
+  showPastButton.addEventListener("click", function () {
+    const pastCount = pastEventsContainer
+      ? pastEventsContainer.children.length
+      : 0;
+
+    if (pastMajalisSection.style.display === "none") {
+      pastMajalisSection.style.display = "block";
+
+      showPastButton.textContent = 
+        pastCount === 1
+          ? "Hide Past Majlis (1)"
+          : `Hide Past Majalis (${pastCount})`;
+    } else {
+      pastMajalisSection.style.display = "none";
+
+      showPastButton.textContent = 
+        pastCount === 1
+          ? "Show Past Majlis (1)"
+          : `Show Past Majalis (${pastCount})`;
+    }
+  });
+}
 
 loadEventsFromFirebase();
