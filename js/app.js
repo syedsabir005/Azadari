@@ -414,6 +414,39 @@ function renderNextMajlis() {
   renderCountdown(nextEvent);
 }
 
+function renderCountdown(event) {
+  const countdownElement = document.getElementById("countdown");
+
+  if (!countdownElement) return;
+
+  function updateCountdown() {
+    const target = new Date(`${event.date}T${event.time}`);
+    const now = new Date();
+    const difference = target.getTime() - now.getTime();
+
+    if (difference <= 0) {
+      countdownElement.textContent = "Majlis In Progress";
+      return;
+    }
+
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+
+    const hours = Math.floor(
+      (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+
+    const minutes = Math.floor(
+      (difference % (1000 * 60 * 60)) / (1000 * 60)
+    );
+
+    countdownElement.textContent =
+      `Starts in ${days} Days ${hours} Hours ${minutes} Minutes`;
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 60000);
+}
+
 function buildEventCard(event, includeAdminTools) {
   const originalIndex = events.indexOf(event);
   const speaker = event.speaker.trim() || "To Be Announced";
