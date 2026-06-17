@@ -239,13 +239,17 @@ button:hover,
 
 .card-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 18px;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
 }
 
 .card-actions a,
 .card-actions button {
-  flex: 1;
+  flex: 1 1 120px;
+  padding: 9px 12px;
+  font-size: 14px;
+  min-height: 42px;
 }
 
 .empty-message {
@@ -309,9 +313,23 @@ button:hover,
     padding: 0 12px;
   }
 
-  .data-actions,
-  .card-actions {
+  .data-actions {
     flex-direction: column;
+  }
+
+  .card-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .card-actions a,
+  .card-actions button {
+    width: 100%;
+    min-width: 0;
+    padding: 9px 8px;
+    font-size: 13px;
+    min-height: 40px;
   }
 }
 
