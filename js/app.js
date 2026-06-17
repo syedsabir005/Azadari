@@ -91,6 +91,29 @@ function formatFullDate(dateValue) {
   return `${weekday}, ${month} ${day}, ${year}`;
 }
 
+function formatDisplayDate(event) {
+  const date = new Date(event.date + "T00:00:00");
+
+  const weekday = date.toLocaleDateString("en-US", {
+    weekday: "long"
+  });
+
+  const month = date.toLocaleDateString("en-US", {
+    month: "long"
+  });
+
+  const day = date.getDate();
+  const year = date.getFullYear();
+
+  const englishDate = `${weekday} | ${month} ${day}, ${year}`;
+
+  if (event.hijriDate && event.hijriDate.trim()) {
+    return `${englishDate} | ${event.hijriDate.trim()}`;
+  }
+
+  return englishDate;
+}
+
 function formatTime(timeValue) {
   const [hour, minute] = timeValue.split(":");
   const date = new Date();
@@ -410,24 +433,38 @@ function renderNextMajlis() {
 
   const nextEvent = upcomingEvents[0];
   const originalIndex = events.indexOf(nextEvent);
-  const speaker = nextEvent.speaker.trim() || "To Be Announced";
+  const speaker = nextEvent.speaker && nextEvent.speaker.trim()
+    ? nextEvent.speaker.trim()
+    : "";
 
   nextMajlisSection.innerHTML = `
-    <div class="next-label">Next Majlis</div>
+    <div class="next-top-row">
+      <div class="next-indicator">NEXT MAJLIS</div>
+      <div class="countdown" id="countdown"></div>
+    </div>
 
     <div class="next-title">
-      ${nextEvent.majlisTitle || nextEvent.eventName}
+      ${nextEvent.eventName}
     </div>
+
+    ${
+      nextEvent.majlisTitle && nextEvent.majlisTitle.trim()
+        ? `<div class="event-subtitle">${nextEvent.majlisTitle}</div>`
+        : ""  
+    }
 
     <div class="compact-date-line">
-      ${formatDateWithHijri(nextEvent)}
+      ${formatDisplayDate(nextEvent)}
     </div>
-
-    <div class="countdown" id="countdown"></div>
 
     <div class="compact-meta">
       <div><strong>Time:</strong> ${formatTime(nextEvent.time)}</div>
-      <div><strong>Speaker:</strong> ${speaker}</div>
+      ${speaker ? `<div><strong>Speaker:</strong> ${speaker}</div>` : ""}
+      ${
+        nextEvent.host && nextEvent.host.trim()
+          ? `<div class="requested-line"><strong>Requested By:</strong> ${nextEvent.host.trim()}</div>`
+          : ""
+      }
       <div><strong>Address:</strong> ${nextEvent.address}</div>
     </div>
 
@@ -487,7 +524,7 @@ function buildEventCard(event, includeAdminTools) {
     : "";
 
   const hostLine = event.host && event.host.trim()
-    ? `<div><strong>Requested By:</strong> ${event.host}</div>`
+    ? `<div class="requested-line"><strong>Requested By:</strong> ${event.host.trim()}</div>`
     : "";
 
   const notesLine = event.notes.trim()
@@ -541,7 +578,7 @@ function buildEventCard(event, includeAdminTools) {
       ${includeAdminTools ? adminTitleHtml : publicTitleHtml}
 
     <div class="compact-date-line">
-      ${formatDateWithHijri(event)}
+      ${formatDisplayDate(event)}
     </div>
 
     <div class="compact-meta">
@@ -578,7 +615,7 @@ function renderCalendarStrip() {
 
   calendarStripSection.innerHTML = `
       <div class="calendar-strip-title">
-        Dates At A Glance
+        Moharram Dates
       </div>
 
       <div class="calendar-strip">

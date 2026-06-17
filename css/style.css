@@ -76,10 +76,14 @@ body {
   margin-bottom: 10px;
 }
 
+.next-label {
+  text-transform: uppercase;
+}
+
 .next-title {
-  font-size: 24px;
+  font-size: 34px;
   font-weight: 700;
-  margin-bottom: 6px;
+  margin-bottom: 8px 0;
 }
 
 .next-venue {
@@ -465,6 +469,20 @@ button:hover,
     padding: 10px 14px;
     font-size: 13px;
   }
+    .next-top-row {
+    align-items: flex-start;
+  }
+
+  .compact-date-line {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 12px 0 16px;
+  }
+
+  .requested-line {
+    font-size: 16px;
+    font-weight: 600;
+  }
 }
 
 .past-actions {
@@ -579,4 +597,27 @@ button:hover,
   display: block;
   font-size: 22px;
   line-height: 1.1;
+}
+
+.next-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.next-top-row .countdown {
+  margin: 0;
+}
+
+.compact-date-line {
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.requested-line {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111;
 }
