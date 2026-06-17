@@ -389,11 +389,6 @@ function renderNextMajlis() {
   const originalIndex = events.indexOf(nextEvent);
   const speaker = nextEvent.speaker.trim() || "To Be Announced";
 
-  const majlisTitleHtml =
-    nextEvent.majlisTitle && nextEvent.majlisTitle.trim()
-      ? `<div class="event-subtitle">${nextEvent.majlisTitle}</div>`
-      : "";
-
   nextMajlisSection.innerHTML = `
     <div class="next-label">Next Majlis</div>
 
@@ -401,9 +396,10 @@ function renderNextMajlis() {
       ${nextEvent.majlisTitle || nextEvent.eventName}
     </div>
 
-    <div class="countdown" id="countdown"></div>
+    <div class="compact-date-line">
       ${formatDateWithHijri(nextEvent)}
     </div>
+
     <div class="countdown" id="countdown"></div>
 
     <div class="compact-meta">
@@ -414,6 +410,7 @@ function renderNextMajlis() {
 
     ${getActionButtons(nextEvent, originalIndex, false)}
   `;
+
   renderCountdown(nextEvent);
 }
 
