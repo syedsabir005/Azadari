@@ -244,33 +244,49 @@ function getCityFromAddress(address) {
 }
 
 function buildWhatsAppMessage(event) {
-  const speaker = event.speaker.trim() || "To Be Announced";
+  const lines = [];
 
-  const phoneSection = event.phone.trim()
-    ? `Contact: ${event.phone}\n`
-    : "";
+  if (event.eventName && event.eventName.trim()) {
+    lines.push(`*${event.eventName.trim()}*`);
+  }
 
-  const notesSection = event.notes.trim()
-    ? `Notes: ${event.notes}\n`
-    : "";
+  if (event.majlisTitle && event.majlisTitle.trim()) {
+    lines.push(`_${event.majlisTitle.trim()}_`);
+  }
 
-  const weekdayDate = formatFullDate(event.date);
+  if (event.date) {
+    lines.push(`*${formatFullDate(event.date)}*`);
+  }
 
-  return `*${event.eventName}*
+  if (event.hijriDate && event.hijriDate.trim()) {
+    lines.push(`*${event.hijriDate.trim()}*`);
+  }
 
-_${event.majlisTitle || ""}_
+  if (event.time) {
+    lines.push(`*Time: ${formatTime(event.time)}*`);
+  }
 
-*${weekdayDate}*
-*${event.hijriDate || ""}*
-*Time: ${formatTime(event.time)}*
+  if (event.speaker && event.speaker.trim()) {
+    lines.push(`Speaker: ${event.speaker.trim()}`);
+  }
 
-Speaker: ${speaker}
+  if (event.address && event.address.trim()) {
+    lines.push(`Address:\n${event.address.trim()}`);
+  }
 
-Address:
-${event.address}
+  if (event.host && event.host.trim()) {
+    lines.push(`Requested By: ${event.host.trim()}`);
+  }
 
-Requested By: ${event.host}
-${phoneSection}${notesSection}`;
+  if (event.phone && event.phone.trim()) {
+    lines.push(`Contact: ${event.phone.trim()}`);
+  }
+
+  if (event.notes && event.notes.trim()) {
+    lines.push(`Notes: ${event.notes.trim()}`);
+  }
+
+  return lines.join("\n\n");
 }
 
 function getWhatsAppUrl(event) {
@@ -456,7 +472,9 @@ function renderCountdown(event) {
 
 function buildEventCard(event, includeAdminTools) {
   const originalIndex = events.indexOf(event);
-  const speaker = event.speaker.trim() || "To Be Announced";
+  const speaker = event.speaker && event.speaker.trim()
+    ? event.speaker.trim()
+    : "";
   const isPastEvent = getEventDateTime(event) < new Date();
 
   const majlisTitleHtml =
@@ -468,8 +486,8 @@ function buildEventCard(event, includeAdminTools) {
     ? `<div><strong>Phone:</strong> ${event.phone}</div>`
     : "";
 
-  const hostLine = includeAdminTools
-    ? `<div><strong>Host:</strong> ${event.host}</div>`
+  const hostLine = event.host && event.host.trim()
+    ? `<div><strong>Requested By:</strong> ${event.host}</div>`
     : "";
 
   const notesLine = event.notes.trim()
@@ -493,14 +511,22 @@ function buildEventCard(event, includeAdminTools) {
     `
     : "";
 
-  const publicTitleHtml =
-    event.majlisTitle && event.majlisTitle.trim()
-      ? `<div class="event-title">${event.majlisTitle}</div>`
-      : `<div class="event-title">${event.eventName}</div>`;
+  const publicTitleHtml = `
+    <div class="event-title">${event.eventName}</div>
+    ${
+      event.majlisTitle && event.majlisTitle.trim()
+        ? `<div class="event-subtitle">${event.majlisTitle}</div>`
+        : ""
+    }
+  `;
 
   const adminTitleHtml = `
     <div class="event-title">${event.eventName}</div>
-    ${majlisTitleHtml}
+    ${
+      event.majlisTitle && event.majlisTitle.trim()
+        ? `<div class="event-subtitle">${event.majlisTitle}</div>`
+        : ""
+    }
   `;
 
   const publicPastButtons = isPastEvent && !includeAdminTools
@@ -520,7 +546,7 @@ function buildEventCard(event, includeAdminTools) {
 
     <div class="compact-meta">
       <div><strong>Time:</strong> ${formatTime(event.time)}</div>
-      <div><strong>Speaker:</strong> ${speaker}</div>
+      ${speaker ? `<div><strong>Speaker:</strong> ${speaker}</div>` : ""}
       ${hostLine}
       <div><strong>Address:</strong> ${event.address}</div>
       ${phoneLine}
