@@ -354,3 +354,46 @@ button:hover,
   font-size: 14px;
   font-weight: 700;
 }
+
+.floating-whatsapp {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .floating-whatsapp {
+    display: inline-flex;
+    position: fixed;
+    right: 15px;
+    bottom: 15px;
+    z-index: 999;
+
+    background: #111;
+    color: #fff;
+
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+
+    padding: 10px 16px;
+    border-radius: 999px;
+
+    box-shadow: 0 2px 4px rgba(0,0,0,.12);
+
+    letter-spacing: 0.3px;
+
+    transition: all .2s ease;
+  }
+
+  .floating-whatsapp:hover {
+    background: #222;
+  }
+}
+
+@media (max-width: 600px) {
+  .floating-whatsapp {
+    right: 12px;
+    bottom: 12px;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+}
