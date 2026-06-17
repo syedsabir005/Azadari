@@ -230,6 +230,18 @@ function getFilteredEvents() {
   });
 }
 
+function getCityFromAddress(address) {
+  if (!address) return "";
+
+  const parts = address.split(",").map((part) => part.trim());
+
+  if (parts.length >= 2) {
+    return parts[1];
+  }
+
+  return "";
+}
+
 function buildWhatsAppMessage(event) {
   const speaker = event.speaker.trim() || "To Be Announced";
 
@@ -391,9 +403,15 @@ function renderNextMajlis() {
   const nextEvent = upcomingEvents[0];
   const originalIndex = events.indexOf(nextEvent);
   const speaker = nextEvent.speaker.trim() || "To Be Announced";
+  const city = getCityFromAddress(nextEvent.address);
+  const cityBadge = city
+    ? `<span class="city-badge">${city}</span>`
+    : "";
 
   nextMajlisSection.innerHTML = `
     <div class="next-label">Next Majlis</div>
+    
+    ${cityBadge}
 
     <div class="next-title">
       ${nextEvent.majlisTitle || nextEvent.eventName}
@@ -454,6 +472,10 @@ function buildEventCard(event, includeAdminTools) {
   const originalIndex = events.indexOf(event);
   const speaker = event.speaker.trim() || "To Be Announced";
   const isPastEvent = getEventDateTime(event) < new Date();
+  const city = getCityFromAddress(event.address);
+  const cityBadge = city
+    ? `<span class="city-badge">${city}</span>`
+    : "";
 
   const majlisTitleHtml =
     event.majlisTitle && event.majlisTitle.trim()
@@ -516,6 +538,7 @@ function buildEventCard(event, includeAdminTools) {
   card.className = "event-card compact-event-card";
 
   card.innerHTML = `
+      ${cityBadge}
       ${includeAdminTools ? adminTitleHtml : publicTitleHtml}
 
     <div class="compact-date-line">
