@@ -374,13 +374,22 @@ function getActionButtons(event, originalIndex, includeAdminButtons) {
 
       <button
         type="button"
+        onclick="shareMajlis(${originalIndex})"
+      >
+        Share
+      </button>
+
+      <button
+        type="button"
         onclick="copyInvite(${originalIndex})"
       >
         Copy Invite
       </button>
 
       <a href="${googleCalendarUrl}" target="_blank">Google Calendar</a>
+
       <a href="${iCalendarUrl}" download="${getCalendarTitle(event)}.ics">iCal</a>
+      
       ${adminButtons}
     </div>
   `;
@@ -410,7 +419,7 @@ function renderNextMajlis() {
 
   nextMajlisSection.innerHTML = `
     <div class="next-label">Next Majlis</div>
-    
+
     ${cityBadge}
 
     <div class="next-title">
@@ -751,6 +760,26 @@ window.copyInvite = function copyInvite(index) {
   );
 
   alert("Invite copied to clipboard");
+};
+
+window.shareMajlis = async function shareMajlis(index) {
+  const event = events[index];
+  const shareText = buildWhatsAppMessage(event);
+
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: event.majlisTitle || event.eventName,
+        text: shareText,
+        url: window.location.href
+      });
+    } catch (error) {
+      // User cancelled sharing.
+    }
+  } else {
+    navigator.clipboard.writeText(shareText);
+    alert("Invite copied to clipboard");
+  }
 };
 
 window.deleteEvent = async function deleteEvent(index) {
