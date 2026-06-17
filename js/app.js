@@ -230,6 +230,18 @@ function getFilteredEvents() {
   });
 }
 
+function getCityFromAddress(address) {
+  if (!address) return "";
+
+  const parts = address.split(",").map((part) => part.trim());
+
+  if (parts.length >= 2) {
+    return parts[1];
+  }
+
+  return "";
+}
+
 function buildWhatsAppMessage(event) {
   const speaker = event.speaker.trim() || "To Be Announced";
 
@@ -362,13 +374,22 @@ function getActionButtons(event, originalIndex, includeAdminButtons) {
 
       <button
         type="button"
+        onclick="shareMajlis(${originalIndex})"
+      >
+        Share
+      </button>
+
+      <button
+        type="button"
         onclick="copyInvite(${originalIndex})"
       >
         Copy Invite
       </button>
 
       <a href="${googleCalendarUrl}" target="_blank">Google Calendar</a>
+
       <a href="${iCalendarUrl}" download="${getCalendarTitle(event)}.ics">iCal</a>
+      
       ${adminButtons}
     </div>
   `;
@@ -391,9 +412,15 @@ function renderNextMajlis() {
   const nextEvent = upcomingEvents[0];
   const originalIndex = events.indexOf(nextEvent);
   const speaker = nextEvent.speaker.trim() || "To Be Announced";
+  const city = getCityFromAddress(nextEvent.address);
+  const cityBadge = city
+    ? `<span class="city-badge">${city}</span>`
+    : "";
 
   nextMajlisSection.innerHTML = `
     <div class="next-label">Next Majlis</div>
+
+    ${cityBadge}
 
     <div class="next-title">
       ${nextEvent.majlisTitle || nextEvent.eventName}
@@ -454,6 +481,10 @@ function buildEventCard(event, includeAdminTools) {
   const originalIndex = events.indexOf(event);
   const speaker = event.speaker.trim() || "To Be Announced";
   const isPastEvent = getEventDateTime(event) < new Date();
+  const city = getCityFromAddress(event.address);
+  const cityBadge = city
+    ? `<span class="city-badge">${city}</span>`
+    : "";
 
   const majlisTitleHtml =
     event.majlisTitle && event.majlisTitle.trim()
@@ -516,6 +547,7 @@ function buildEventCard(event, includeAdminTools) {
   card.className = "event-card compact-event-card";
 
   card.innerHTML = `
+      ${cityBadge}
       ${includeAdminTools ? adminTitleHtml : publicTitleHtml}
 
     <div class="compact-date-line">
@@ -728,6 +760,26 @@ window.copyInvite = function copyInvite(index) {
   );
 
   alert("Invite copied to clipboard");
+};
+
+window.shareMajlis = async function shareMajlis(index) {
+  const event = events[index];
+  const shareText = buildWhatsAppMessage(event);
+
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: event.majlisTitle || event.eventName,
+        text: shareText,
+        url: window.location.href
+      });
+    } catch (error) {
+      // User cancelled sharing.
+    }
+  } else {
+    navigator.clipboard.writeText(shareText);
+    alert("Invite copied to clipboard");
+  }
 };
 
 window.deleteEvent = async function deleteEvent(index) {
