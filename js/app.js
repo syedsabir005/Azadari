@@ -42,6 +42,7 @@ const pastMajalisSection = document.getElementById("pastMajalisSection");
 const pastEventsContainer = document.getElementById("pastEventsContainer");
 const publicSearchInput = document.getElementById("publicSearchInput");
 const publicMajlisCount = document.getElementById("publicMajlisCount");
+const calendarStripSection = document.getElementById("calendarStripSection");
 
 let events = [];
 let editingIndex = null;
@@ -360,21 +361,21 @@ function getActionButtons(event, originalIndex, includeAdminButtons) {
 
   const adminButtons = includeAdminButtons
     ? `
-      ${callButton}
-      <button type="button" onclick="editEvent(${originalIndex})">Edit</button>
-      <button type="button" class="delete-button" onclick="deleteEvent(${originalIndex})">Delete</button>
-    `
+        ${callButton}
+        <a href="${googleCalendarUrl}" target="_blank">Google Calendar</a>
+        <a href="${iCalendarUrl}" download="${getCalendarTitle(event)}.ics">iCal</a>
+        <button type="button" onclick="editEvent(${originalIndex})">Edit</button>
+        <button type="button" class="delete-button" onclick="deleteEvent(${originalIndex})">Delete</button>
+      `
     : "";
 
   return `
-    <div class="card-actions">
-      <a href="${mapUrl}" target="_blank">Directions</a>
-      <a href="${whatsappUrl}" target="_blank">WhatsApp</a>
-      <a href="${googleCalendarUrl}" target="_blank">Google Calendar</a>
-      <a href="${iCalendarUrl}" download="${getCalendarTitle(event)}.ics">iCal</a>
-      ${adminButtons}
-    </div>
-  `;
+      <div class="card-actions">
+        <a href="${mapUrl}" target="_blank">Directions</a>
+        <a href="${whatsappUrl}" target="_blank">WhatsApp</a>
+        ${adminButtons}
+      </div>
+    `;
 }
 
 function renderNextMajlis() {
@@ -508,6 +509,7 @@ function buildEventCard(event, includeAdminTools) {
 
   const card = document.createElement("div");
   card.className = "event-card compact-event-card";
+  card.setAttribute("data-event-date", event.date);
 
   card.innerHTML = `
       ${includeAdminTools ? adminTitleHtml : publicTitleHtml}
@@ -531,6 +533,61 @@ function buildEventCard(event, includeAdminTools) {
   `;
 
   return card;
+}
+
+function renderCalendarStrip() {
+  if (!calendarStripSection) return;
+
+  const upcomingEvents = getSortedEvents(events)
+    .filter((event) => getEventDateTime(event) >= new Date());
+
+  const dates = [...new Set(
+    upcomingEvents.map((event) => event.date)
+  )];
+
+  if (dates.length === 0) {
+    calendarStripSection.innerHTML = "";
+    return;
+  }
+
+  calendarStripSection.innerHTML = `
+      <div class="calendar-strip-title">
+        Dates At A Glance
+      </div>
+
+      <div class="calendar-strip">
+        ${dates.slice(0, 10).map((dateValue) => {
+          const date = new Date(dateValue + "T00:00:00");
+
+          const weekday = date.toLocaleDateString(
+            "en-US",
+            { weekday: "short" }
+          );
+
+          const day = date.toLocaleDateString(
+            "en-US",
+            { day: "numeric" }
+          );
+
+          const month = date.toLocaleDateString(
+            "en-US",
+            { month: "short" }
+          );
+
+          return `
+            <button
+              type="button"
+              class="calendar-date"
+              onclick="scrollToDate('${dateValue}')"
+            >
+              <span>${weekday}</span>
+              <strong>${day}</strong>
+              <small>${month}</small>
+            </button>
+          `;
+        }).join("")}
+      </div>
+    `;
 }
 
 function getPublicFilteredEvents(eventList) {
@@ -671,6 +728,7 @@ function renderAdminEvents() {
 }
 
 function renderEvents() {
+  renderCalendarStrip();
   renderNextMajlis();
   renderPublicEvents();
   renderAdminEvents();
@@ -742,6 +800,17 @@ window.shareMajlis = async function shareMajlis(index) {
     navigator.clipboard.writeText(shareText);
     alert("Invite copied to clipboard");
   }
+};
+
+window.scrollToDate = function scrollToDate(dateValue) {
+  const target = document.querySelector(`[data-event-date="${dateValue}"]`);
+
+  if (!target) return;
+
+  target.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
 };
 
 window.deleteEvent = async function deleteEvent(index) {
