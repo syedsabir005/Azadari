@@ -414,8 +414,7 @@ function renderNextMajlis() {
 
     ${getActionButtons(nextEvent, originalIndex, false)}
   `;
-
-renderCountdown(nextEvent);
+  renderCountdown(nextEvent);
 }
 
 function buildEventCard(event, includeAdminTools) {
