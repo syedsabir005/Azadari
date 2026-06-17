@@ -354,12 +354,13 @@ function getActionButtons(event, originalIndex, includeAdminButtons) {
   const googleCalendarUrl = getGoogleCalendarUrl(event);
   const iCalendarUrl = getICalendarUrl(event);
 
-  const callButton = event.phone.trim()
+  const callButton = includeAdminButtons && event.phone.trim()
     ? `<a href="tel:${cleanPhone(event.phone)}">Call</a>`
     : "";
 
   const adminButtons = includeAdminButtons
     ? `
+      ${callButton}
       <button type="button" onclick="editEvent(${originalIndex})">Edit</button>
       <button type="button" class="delete-button" onclick="deleteEvent(${originalIndex})">Delete</button>
     `
@@ -368,28 +369,9 @@ function getActionButtons(event, originalIndex, includeAdminButtons) {
   return `
     <div class="card-actions">
       <a href="${mapUrl}" target="_blank">Directions</a>
-        
-      ${callButton}
       <a href="${whatsappUrl}" target="_blank">WhatsApp</a>
-
-      <button
-        type="button"
-        onclick="shareMajlis(${originalIndex})"
-      >
-        Share
-      </button>
-
-      <button
-        type="button"
-        onclick="copyInvite(${originalIndex})"
-      >
-        Copy Invite
-      </button>
-
       <a href="${googleCalendarUrl}" target="_blank">Google Calendar</a>
-
       <a href="${iCalendarUrl}" download="${getCalendarTitle(event)}.ics">iCal</a>
-      
       ${adminButtons}
     </div>
   `;
@@ -412,15 +394,9 @@ function renderNextMajlis() {
   const nextEvent = upcomingEvents[0];
   const originalIndex = events.indexOf(nextEvent);
   const speaker = nextEvent.speaker.trim() || "To Be Announced";
-  const city = getCityFromAddress(nextEvent.address);
-  const cityBadge = city
-    ? `<span class="city-badge">${city}</span>`
-    : "";
 
   nextMajlisSection.innerHTML = `
     <div class="next-label">Next Majlis</div>
-
-    ${cityBadge}
 
     <div class="next-title">
       ${nextEvent.majlisTitle || nextEvent.eventName}
@@ -481,10 +457,6 @@ function buildEventCard(event, includeAdminTools) {
   const originalIndex = events.indexOf(event);
   const speaker = event.speaker.trim() || "To Be Announced";
   const isPastEvent = getEventDateTime(event) < new Date();
-  const city = getCityFromAddress(event.address);
-  const cityBadge = city
-    ? `<span class="city-badge">${city}</span>`
-    : "";
 
   const majlisTitleHtml =
     event.majlisTitle && event.majlisTitle.trim()
@@ -531,23 +503,13 @@ function buildEventCard(event, includeAdminTools) {
   `;
 
   const publicPastButtons = isPastEvent && !includeAdminTools
-    ? `
-      <div class="card-actions">
-        <button
-          type="button"
-          onclick="copyInvite(${originalIndex})"
-        >
-          Copy Invite
-        </button>
-      </div>
-    `
+    ? ""
     : getActionButtons(event, originalIndex, includeAdminTools);
 
   const card = document.createElement("div");
   card.className = "event-card compact-event-card";
 
   card.innerHTML = `
-      ${cityBadge}
       ${includeAdminTools ? adminTitleHtml : publicTitleHtml}
 
     <div class="compact-date-line">
