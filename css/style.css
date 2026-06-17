@@ -239,7 +239,7 @@ button:hover,
 
 .card-actions {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
   margin-top: 16px;
 }
@@ -331,6 +331,44 @@ button:hover,
     font-size: 13px;
     min-height: 40px;
   }
+
+  .form-section,
+  .events-section,
+  .next-majlis-section {
+    padding: 18px;
+    margin-bottom: 18px;
+  }
+
+  .event-card {
+    padding: 16px;
+  }
+
+  .event-title,
+  .next-title {
+    font-size: 22px;
+    line-height: 1.2;
+  }
+
+  .compact-meta {
+    font-size: 15px;
+  }
+
+  .admin-note {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .countdown {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+
+  .floating-whatsapp {
+    right: 12px;
+    bottom: 12px;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
 }
 
 .past-actions {
@@ -389,32 +427,10 @@ button:hover,
   }
 }
 
-@media (max-width: 600px) {
-  .floating-whatsapp {
-    right: 12px;
-    bottom: 12px;
-    padding: 10px 14px;
-    font-size: 13px;
-  }
-}
-
 .public-count {
   margin-top: -8px;
   margin-bottom: 14px;
   color: #666;
   font-size: 14px;
   font-weight: 600;
-}
-
-.city-badge {
-  display: inline-block;
-  margin-bottom: 10px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: #f1f1f1;
-  color: #333;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
 }
