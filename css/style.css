@@ -41,14 +41,16 @@ body {
 }
 
 .container {
-  max-width: 900px;
+  max-width: 760px;
   margin: 30px auto;
   padding: 0 20px;
 }
 
 .form-section,
 .events-section,
-.next-majlis-section {
+.next-majlis-section,
+.welcome-section,
+.calendar-strip-section {
   background: #fff;
   padding: 24px;
   margin-bottom: 24px;
@@ -239,7 +241,7 @@ button:hover,
 
 .card-actions {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
   margin-top: 16px;
 }
@@ -334,7 +336,9 @@ button:hover,
 
   .form-section,
   .events-section,
-  .next-majlis-section {
+  .next-majlis-section,
+  .welcome-section,
+  .calendar-strip-section {
     padding: 18px;
     margin-bottom: 18px;
   }
@@ -433,4 +437,54 @@ button:hover,
   color: #666;
   font-size: 14px;
   font-weight: 600;
+}
+
+.welcome-section h2 {
+  margin-bottom: 10px;
+}
+
+.welcome-section p {
+  margin: 0;
+  line-height: 1.7;
+  color: #444;
+}
+
+.calendar-strip-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.calendar-strip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.calendar-date {
+  min-width: 72px;
+  padding: 10px;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.calendar-date span,
+.calendar-date small {
+  display: block;
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.calendar-date strong {
+  display: block;
+  font-size: 22px;
+  line-height: 1.1;
 }
