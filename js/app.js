@@ -1014,10 +1014,6 @@ if (searchInput) {
   searchInput.addEventListener("input", renderAdminEvents);
 }
 
-if (publicSearchInput) {
-  publicSearchInput.addEventListener("input", renderPublicEvents);
-}
-
 if (exportButton) {
   exportButton.addEventListener("click", exportEvents);
 }

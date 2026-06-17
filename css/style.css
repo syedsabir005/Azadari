@@ -60,6 +60,7 @@ body {
 }
 
 .next-majlis-section {
+  background: #fafafa;
   border-left: 5px solid #111;
 }
 
@@ -76,14 +77,11 @@ body {
   margin-bottom: 10px;
 }
 
-.next-label {
-  text-transform: uppercase;
-}
-
 .next-title {
-  font-size: 34px;
+  font-size: 28px;
   font-weight: 700;
-  margin-bottom: 8px 0;
+  margin: 8px 0 6px;
+  line-height: 1.2;
 }
 
 .next-venue {
@@ -313,30 +311,30 @@ button:hover,
   }
 
   .site-header {
-    padding: 26px 18px;
+    padding: 22px 16px;
   }
 
   .site-logo {
-    width: 96px;
-    max-width: 96px;
-    margin-bottom: 14px;
+    width: 82px;
+    max-width: 82px;
+    margin-bottom: 12px;
   }
 
   .site-header h1 {
-    font-size: 24px;
+    font-size: 21px;
     line-height: 1.25;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
   }
 
   .site-header p {
-    font-size: 13px;
-    line-height: 1.45;
-    letter-spacing: 0.8px;
+    font-size: 12px;
+    line-height: 1.4;
+    letter-spacing: 0.5px;
   }
 
   .container {
-    padding: 0 14px;
-    margin: 22px auto;
+    padding: 0 12px;
+    margin: 18px auto;
   }
 
   .form-section,
@@ -344,20 +342,20 @@ button:hover,
   .next-majlis-section,
   .welcome-section,
   .calendar-strip-section {
-    padding: 18px;
+    padding: 16px;
     margin-bottom: 16px;
     border-radius: 14px;
   }
 
   .welcome-section h2,
   .events-section h2 {
-    font-size: 24px;
-    margin-bottom: 12px;
+    font-size: 21px;
+    margin-bottom: 10px;
   }
 
   .welcome-section p {
-    font-size: 15px;
-    line-height: 1.65;
+    font-size: 14px;
+    line-height: 1.55;
   }
 
   .calendar-strip {
@@ -380,9 +378,9 @@ button:hover,
   }
 
   .next-title {
-    font-size: 28px;
-    line-height: 1.18;
-    margin-bottom: 10px;
+    font-size: 22px;
+    line-height: 1.25;
+    margin-bottom: 6px;
   }
 
   .countdown {
@@ -392,32 +390,39 @@ button:hover,
   }
 
   .event-card {
-    padding: 18px;
+    padding: 16px;
     margin-bottom: 16px;
     border-radius: 14px;
     border-left: 6px solid #111;
   }
 
   .event-title {
-    font-size: 25px;
-    line-height: 1.2;
-    margin-bottom: 10px;
+    font-size: 22px;
+    line-height: 1.25;
+    margin-bottom: 6px;
+  }
+
+  .event-subtitle {
+    font-size: 16px;
+    line-height: 1.3;
+    margin-top: 2px;
+    margin-bottom: 8px;
   }
 
   .compact-date-line {
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1.45;
-    margin: 10px 0 14px;
+    margin: 8px 0 12px;
   }
 
   .compact-meta {
-    font-size: 16px;
-    line-height: 1.75;
-    margin-bottom: 18px;
+    font-size: 14px;
+    line-height: 1.55;
+    margin-bottom: 14px;
   }
 
   .compact-meta div {
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
 
   .admin-note {
@@ -447,9 +452,9 @@ button:hover,
   .card-actions button {
     width: 100%;
     min-width: 0;
-    padding: 12px 10px;
-    font-size: 15px;
-    min-height: 46px;
+    padding: 10px 8px;
+    font-size: 14px;
+    min-height: 42px;
     border-radius: 10px;
   }
 
@@ -473,14 +478,8 @@ button:hover,
     align-items: flex-start;
   }
 
-  .compact-date-line {
-    font-size: 18px;
-    font-weight: 700;
-    margin: 12px 0 16px;
-  }
-
   .requested-line {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
   }
 }
@@ -513,31 +512,7 @@ button:hover,
 
 @media (max-width: 768px) {
   .floating-whatsapp {
-    display: inline-flex;
-    position: fixed;
-    right: 15px;
-    bottom: 15px;
-    z-index: 999;
-
-    background: #111;
-    color: #fff;
-
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 600;
-
-    padding: 10px 16px;
-    border-radius: 999px;
-
-    box-shadow: 0 2px 4px rgba(0,0,0,.12);
-
-    letter-spacing: 0.3px;
-
-    transition: all .2s ease;
-  }
-
-  .floating-whatsapp:hover {
-    background: #222;
+    display: none;
   }
 }
 
