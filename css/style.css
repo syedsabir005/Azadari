@@ -296,42 +296,35 @@ button:hover,
 }
 
 @media (max-width: 600px) {
+  body {
+    background: #f2f2f2;
+  }
+
+  .site-header {
+    padding: 26px 18px;
+  }
+
   .site-logo {
-    width: 90px;
-    max-width: 90px;
+    width: 96px;
+    max-width: 96px;
+    margin-bottom: 14px;
   }
 
   .site-header h1 {
-    font-size: 22px;
-    letter-spacing: 1px;
+    font-size: 24px;
+    line-height: 1.25;
+    letter-spacing: 1.5px;
   }
 
   .site-header p {
-    font-size: 12px;
-    letter-spacing: 0.5px;
+    font-size: 13px;
+    line-height: 1.45;
+    letter-spacing: 0.8px;
   }
 
   .container {
-    padding: 0 12px;
-  }
-
-  .data-actions {
-    flex-direction: column;
-  }
-
-  .card-actions {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-  }
-
-  .card-actions a,
-  .card-actions button {
-    width: 100%;
-    min-width: 0;
-    padding: 9px 8px;
-    font-size: 13px;
-    min-height: 40px;
+    padding: 0 14px;
+    margin: 22px auto;
   }
 
   .form-section,
@@ -340,31 +333,122 @@ button:hover,
   .welcome-section,
   .calendar-strip-section {
     padding: 18px;
-    margin-bottom: 18px;
+    margin-bottom: 16px;
+    border-radius: 14px;
   }
 
-  .event-card {
-    padding: 16px;
+  .welcome-section h2,
+  .events-section h2 {
+    font-size: 24px;
+    margin-bottom: 12px;
   }
 
-  .event-title,
-  .next-title {
-    font-size: 22px;
-    line-height: 1.2;
-  }
-
-  .compact-meta {
+  .welcome-section p {
     font-size: 15px;
+    line-height: 1.65;
   }
 
-  .admin-note {
-    font-size: 13px;
-    line-height: 1.4;
+  .calendar-strip {
+    gap: 8px;
+  }
+
+  .calendar-date {
+    min-width: 64px;
+    padding: 9px 8px;
+    border-radius: 10px;
+  }
+
+  .next-majlis-section {
+    border-left: 6px solid #111;
+  }
+
+  .next-label {
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+
+  .next-title {
+    font-size: 28px;
+    line-height: 1.18;
+    margin-bottom: 10px;
   }
 
   .countdown {
     font-size: 13px;
-    padding: 6px 12px;
+    padding: 7px 12px;
+    margin: 8px 0 16px;
+  }
+
+  .event-card {
+    padding: 18px;
+    margin-bottom: 16px;
+    border-radius: 14px;
+    border-left: 6px solid #111;
+  }
+
+  .event-title {
+    font-size: 25px;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .compact-date-line {
+    font-size: 16px;
+    line-height: 1.45;
+    margin: 10px 0 14px;
+  }
+
+  .compact-meta {
+    font-size: 16px;
+    line-height: 1.75;
+    margin-bottom: 18px;
+  }
+
+  .compact-meta div {
+    margin-bottom: 6px;
+  }
+
+  .admin-note {
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 14px;
+  }
+
+  .public-count {
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+
+  .search-input {
+    font-size: 15px;
+    padding: 13px;
+    margin-bottom: 18px;
+  }
+
+  .card-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .card-actions a,
+  .card-actions button {
+    width: 100%;
+    min-width: 0;
+    padding: 12px 10px;
+    font-size: 15px;
+    min-height: 46px;
+    border-radius: 10px;
+  }
+
+  .data-actions {
+    flex-direction: column;
+  }
+
+  .past-actions button {
+    width: 100%;
+    padding: 12px;
+    font-size: 15px;
   }
 
   .floating-whatsapp {
