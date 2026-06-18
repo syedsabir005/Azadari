@@ -927,3 +927,9 @@ button:hover,
     color: #111;
   }
 }
+
+.calendar-date-selected {
+  background: #b08d3b;
+  color: #111;
+  box-shadow: 0 0 0 3px rgba(176,141,59,.22);
+}

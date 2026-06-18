@@ -47,6 +47,7 @@ const calendarStripSection = document.getElementById("calendarStripSection");
 let events = [];
 let editingIndex = null;
 let isAdminAuthenticated = false;
+let selectedPublicDate = null;
 
 async function loadEventsFromFirebase() {
   const snapshot = await getDocs(collection(db, COLLECTION_NAME));
@@ -675,6 +676,10 @@ function renderCalendarStrip() {
                 isSameDate(new Date(dateValue + "T00:00:00"), new Date())
                   ? "calendar-date-today"
                   : ""
+              } ${
+                selectedPublicDate === dateValue
+                  ? "calendar-date-selected"
+                  : ""
               }"
               onclick="scrollToDate('${dateValue}')"
             >
@@ -734,8 +739,12 @@ function renderPublicEvents() {
     return getEventDateTime(event) < now;
   });
 
+  const dateFilteredEvents = selectedPublicDate
+    ? upcomingEvents.filter((event) => event.date === selectedPublicDate)
+    : upcomingEvents;
+
   const filteredUpcomingEvents =
-    getPublicFilteredEvents(upcomingEvents);
+    getPublicFilteredEvents(dateFilteredEvents);
 
   if (publicMajlisCount) {
     const upcomingWord =
@@ -746,7 +755,9 @@ function renderPublicEvents() {
         `${filteredUpcomingEvents.length} Upcoming ${upcomingWord} Found`;
     } else {
       publicMajlisCount.textContent =
-        `${upcomingEvents.length} Upcoming ${upcomingEvents.length === 1 ? "Majlis" : "Majalis"}`;
+        selectedPublicDate
+          ? `${filteredUpcomingEvents.length} Majalis on Selected Date`
+          : `${upcomingEvents.length} Upcoming ${upcomingEvents.length === 1 ? "Majlis" : "Majalis"}`;
     }
   }
 
@@ -899,14 +910,19 @@ window.shareMajlis = async function shareMajlis(index) {
 };
 
 window.scrollToDate = function scrollToDate(dateValue) {
-  const target = document.querySelector(`[data-event-date="${dateValue}"]`);
+  selectedPublicDate =
+    selectedPublicDate === dateValue ? null : dateValue;
 
-  if (!target) return;
+  renderPublicEvents();
 
-  target.scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
+  const section = document.querySelector(".events-section");
+
+  if (section) {
+    section.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
 };
 
 window.deleteEvent = async function deleteEvent(index) {
