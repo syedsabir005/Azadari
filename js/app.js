@@ -747,17 +747,25 @@ function renderPublicEvents() {
     getPublicFilteredEvents(dateFilteredEvents);
 
   if (publicMajlisCount) {
-    const upcomingWord =
-      filteredUpcomingEvents.length === 1 ? "Majlis" : "Majalis";
+    if (selectedPublicDate) {
+      publicMajlisCount.innerHTML =
+        `${filteredUpcomingEvents.length} ${filteredUpcomingEvents.length === 1 ? "Majlis" : "Majalis"} on Selected Date`
+        <button type="button"
+          class="clear-date-filter"
+          onclick="clearDateFilter()">
+          Show All
+       </button>`;
+    } else if (publicSearchInput && publicSearchInput.value.trim()) {
+      const upcomingWord =
+        filteredUpcomingEvents.length === 1 ? "Majlis" : "Majalis";
 
-    if (publicSearchInput && publicSearchInput.value.trim()) {
       publicMajlisCount.textContent =
         `${filteredUpcomingEvents.length} Upcoming ${upcomingWord} Found`;
     } else {
       publicMajlisCount.textContent =
-        selectedPublicDate
-          ? `${filteredUpcomingEvents.length} Majalis on Selected Date`
-          : `${upcomingEvents.length} Upcoming ${upcomingEvents.length === 1 ? "Majlis" : "Majalis"}`;
+        `${upcomingEvents.length} Upcoming ${
+          upcomingEvents.length === 1 ? "Majlis" : "Majalis"
+        }`;
     }
   }
 
@@ -923,6 +931,13 @@ window.scrollToDate = function scrollToDate(dateValue) {
       block: "start"
     });
   }
+};
+
+window.clearDateFilter = function clearDateFilter() {
+  selectedPublicDate = null;
+
+  renderCalendarStrip();
+  renderPublicEvents();
 };
 
 window.deleteEvent = async function deleteEvent(index) {

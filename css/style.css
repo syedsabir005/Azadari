@@ -933,3 +933,13 @@ button:hover,
   color: #111;
   box-shadow: 0 0 0 3px rgba(176,141,59,.22);
 }
+
+.clear-date-filter {
+  margin-left: 12px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 999px;
+  min-height: auto;
+  vertical-align: middle;
+}
