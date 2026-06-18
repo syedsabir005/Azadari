@@ -639,13 +639,14 @@ button:hover,
 .compact-date-line,
 .next-date-line {
   display: inline-block;
-  background: rgba(176,141,59,.14);
-  color: #9c7a1c;
-  border: 1px solid rgba(176,141,59,.25);
-  padding: 8px 14px;
+  background: rgba(176,141,59,.18);
+  border: 1px solid rgba(176,141,59,.35);
+  color: #d6b84a;
+  padding: 10px 18px;
   border-radius: 999px;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 800;
+  margin: 12px 0 18px;
   line-height: 1.4;
 }
 

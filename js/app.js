@@ -105,10 +105,10 @@ function formatDisplayDate(event) {
   const day = date.getDate();
   const year = date.getFullYear();
 
-  const englishDate = `${weekday} | ${month} ${day}, ${year}`;
+  const englishDate = `${weekday} • ${month} ${day}, ${year}`;
 
   if (event.hijriDate && event.hijriDate.trim()) {
-    return `${englishDate} | ${event.hijriDate.trim()}`;
+    return `${englishDate} • ${event.hijriDate.trim()}`;
   }
 
   return englishDate;
