@@ -70,7 +70,7 @@ body {
     #fcfcfc 0%,
     #f7f7f7 100%
   );
-  border-left: 6px solid #111;
+  border-left: 6px solid #b08d3b;
   box-shadow:
     0 4px 18px rgba(0,0,0,.06),
     0 1px 4px rgba(0,0,0,.04);
@@ -186,7 +186,8 @@ button:hover,
 .event-title,
 .next-title {
   font-size: 26px;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -.3px;
   line-height: 1.2;
   margin: 4px 0 4px;
 }
@@ -342,7 +343,7 @@ button:hover,
 .next-indicator {
   font-size: 13px;
   font-weight: 700;
-  color: #666;
+  color: #b08d3b;
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 12px;
@@ -630,7 +631,7 @@ button:hover,
 }
 
 .schedule-card .event-subtitle {
-  color: #9c7a1c;
+  color: #8a6d1f;
   font-weight: 700;
 }
 

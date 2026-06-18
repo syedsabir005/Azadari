@@ -162,7 +162,7 @@ async function populateHijriDate() {
     const hijri = data.data.hijri;
 
     hijriInput.value =
-      `${hijri.day} ${hijri.month.en} ${hijri.year}H`;
+      `${hijri.day} ${hijri.month.en} ${hijri.year} AH`;
   } catch (error) {
     console.error("Unable to fetch Hijri date", error);
   }
