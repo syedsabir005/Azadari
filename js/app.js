@@ -108,7 +108,7 @@ function formatDisplayDate(event) {
   const englishDate = `${weekday} • ${month} ${day}, ${year}`;
 
   if (event.hijriDate && event.hijriDate.trim()) {
-    return `${englishDate} • ${event.hijriDate.trim()}`;
+    return `${englishDate} • ${event.hijriDate.replace(/ḥ/g, "h").trim()}`;
   }
 
   return englishDate;
