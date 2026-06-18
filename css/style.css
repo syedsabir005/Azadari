@@ -20,8 +20,8 @@ body {
 }
 
 .site-logo {
-  width: 104px;
-  max-width: 104px;
+  width: 120px;
+  max-width: 120px;
   margin-bottom: 14px;
   border-radius: 12px;
   box-shadow: 0 8px 22px rgba(0,0,0,.45);
@@ -188,7 +188,7 @@ button:hover,
   font-size: 26px;
   font-weight: 700;
   line-height: 1.2;
-  margin: 8px 0 6px;
+  margin: 4px 0 4px;
 }
 
 .event-subtitle,
@@ -207,7 +207,7 @@ button:hover,
   padding: 6px 12px;
   border-radius: 999px;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 800;
   color: #111;
   margin: 10px 0 16px;
   line-height: 1.4;
@@ -247,9 +247,9 @@ button:hover,
 .card-actions a,
 .card-actions button {
   width: 100%;
-  padding: 10px 12px;
-  font-size: 14px;
-  min-height: 42px;
+  padding: 9px 12px;
+  font-size: 13px;
+  min-height: 38px;
 }
 
 .empty-message {
@@ -309,8 +309,9 @@ button:hover,
   margin: 0;
   padding: 7px 14px;
   border-radius: 999px;
-  background: #f1f1f1;
-  color: #111;
+  background: #f2e3b5;
+  border: 1px solid #c9a646;
+  color: #6f5515;
   font-size: 14px;
   font-weight: 700;
 }
@@ -358,6 +359,7 @@ button:hover,
   min-width: 72px;
   padding: 10px;
   background: #111;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -546,7 +548,7 @@ button:hover,
 .welcome-section {
   position: relative;
   overflow: hidden;
-  border-left: 5px solid #111;
+  border-left: 5px solid #b08d3b;
 }
 
 .welcome-section::before {
@@ -618,6 +620,7 @@ button:hover,
 .schedule-card {
   background: #fcfcfc;
   border-radius: 16px;
+  padding: 18px;
   margin-bottom: 24px;
   border: 1px solid #e5e5e5;
   border-left: 6px solid #111;
@@ -639,9 +642,9 @@ button:hover,
 .compact-date-line,
 .next-date-line {
   display: inline-block;
-  background: rgba(176,141,59,.10);
-  border: 1px solid rgba(176,141,59,.22);
-  color: #f0cf6a;
+  background: #f2e3b5;
+  border: 1px solid #c9a646;
+  color: #6f5515;
   padding: 7px 12px;
   border-radius: 999px;
   font-size: 14.5px;
@@ -650,7 +653,7 @@ button:hover,
   line-height: 1.35;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 600px) { 
   .schedule-card {
     padding: 14px;
     margin-bottom: 18px;
@@ -695,9 +698,11 @@ button:hover,
 }
 
 .schedule-card:hover {
-  transform: translateY(-2px);
-  transition: all .2s ease;
-
+  transform: translateY(-3px);
+  box-shadow:
+    0 8px 24px rgba(0,0,0,.08),
+    0 2px 8px rgba(0,0,0,.05);
+  transition: all .25s ease;
 }
 
 .calendar-date-today {
@@ -855,8 +860,10 @@ button:hover,
 
 @media (max-width: 600px) {
   .events-section h2 {
-    font-size: 26px;
-    line-height: 1.15;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -.5px;
+    line-height: 1.1;
   }
 }
 
