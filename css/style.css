@@ -520,3 +520,24 @@ button:hover,
     display: none;
   }
 }
+
+@media (max-width: 600px) {
+  .compact-date-line,
+  .next-date-line {
+    display: inline-block;
+    max-width: 100%;
+    font-size: 13px;
+    padding: 6px 10px;
+    line-height: 1.35;
+  }
+
+  .event-title,
+  .next-title {
+    font-size: 21px;
+  }
+
+  .compact-meta,
+  .next-meta {
+    font-size: 14px;
+  }
+}
