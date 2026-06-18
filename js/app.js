@@ -749,12 +749,14 @@ function renderPublicEvents() {
   if (publicMajlisCount) {
     if (selectedPublicDate) {
       publicMajlisCount.innerHTML =
-        `${filteredUpcomingEvents.length} ${filteredUpcomingEvents.length === 1 ? "Majlis" : "Majalis"} on Selected Date`
+        `${filteredUpcomingEvents.length} ${
+          filteredUpcomingEvents.length === 1 ? "Majlis" : "Majalis"
+        } on Selected Date
         <button type="button"
           class="clear-date-filter"
           onclick="clearDateFilter()">
           Show All
-       </button>`;
+        </button>`;
     } else if (publicSearchInput && publicSearchInput.value.trim()) {
       const upcomingWord =
         filteredUpcomingEvents.length === 1 ? "Majlis" : "Majalis";
@@ -921,6 +923,7 @@ window.scrollToDate = function scrollToDate(dateValue) {
   selectedPublicDate =
     selectedPublicDate === dateValue ? null : dateValue;
 
+  renderCalendarStrip();
   renderPublicEvents();
 
   const section = document.querySelector(".events-section");
