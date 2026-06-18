@@ -65,8 +65,15 @@ body {
 }
 
 .next-majlis-section {
-  background: #fafafa;
+  background: linear-gradient(
+    180deg,
+    #fcfcfc 0%,
+    #f7f7f7 100%
+  );
   border-left: 6px solid #111;
+  box-shadow:
+    0 4px 18px rgba(0,0,0,.06),
+    0 1px 4px rgba(0,0,0,.04);
 }
 
 .next-majlis-section:empty {
@@ -315,8 +322,8 @@ button:hover,
 .public-count {
   margin-top: -8px;
   margin-bottom: 14px;
-  color: #666;
-  font-size: 14px;
+  color: #777;
+  font-size: 16px;
   font-weight: 600;
 }
 
@@ -356,6 +363,14 @@ button:hover,
   border-radius: 10px;
   text-align: center;
   flex-shrink: 0;
+}
+
+.calendar-date {
+  transition: all .2s ease;
+}
+
+.calendar-date:hover {
+  transform: translateY(-2px);
 }
 
 .calendar-date span,
@@ -423,8 +438,10 @@ button:hover,
 
   .welcome-section h2,
   .events-section h2 {
-    font-size: 21px;
-    margin-bottom: 10px;
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
   }
 
   .welcome-section p {
@@ -610,7 +627,7 @@ button:hover,
 }
 
 .schedule-card .event-subtitle {
-  color: #8a6d1f;
+  color: #9c7a1c;
   font-weight: 700;
 }
 
@@ -667,5 +684,121 @@ button:hover,
   .card-actions button {
     min-height: 40px;
     font-size: 13.5px;
+  }
+}
+
+.schedule-card:hover {
+  transform: translateY(-2px);
+  transition: all .2s ease;
+
+}
+
+.calendar-date-today {
+  background: #8a6d1f;
+  box-shadow: 0 0 0 3px rgba(138,109,31,.18);
+}
+
+.today-badge {
+  display: inline-block;
+  background: #8a6d1f;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  white-space: nowrap;
+}
+
+.card-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.next-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 600px) {
+  .card-title-row {
+    gap: 8px;
+  }
+
+  .today-badge {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+
+  .next-top-actions {
+    flex-shrink: 0;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #101010;
+    color: #f2f2f2;
+  }
+
+  .form-section,
+  .events-section,
+  .next-majlis-section,
+  .welcome-section,
+  .calendar-strip-section,
+  .event-card {
+    background: #181818;
+    border-color: #2b2b2b;
+    color: #f2f2f2;
+  }
+
+  .next-majlis-section {
+    background: #181818;
+  }
+
+  .welcome-section p,
+  .compact-meta,
+  .next-meta,
+  .event-subtitle,
+  .next-subtitle {
+    color: #d0d0d0;
+  }
+
+  .compact-date-line,
+  .next-date-line,
+  .countdown {
+    background: #2a2a2a;
+    color: #f5f5f5;
+  }
+
+  .admin-note {
+    background: #202020;
+    color: #e0e0e0;
+  }
+
+  input,
+  textarea {
+    background: #111;
+    color: #f5f5f5;
+    border-color: #333;
+  }
+
+  .schedule-card .event-subtitle {
+    color: #d6b84a;
+  }
+
+  .card-actions a,
+  button {
+    background: #f5f5f5;
+    color: #111;
+  }
+
+  .card-actions a:hover,
+  button:hover {
+    background: #ddd;
   }
 }

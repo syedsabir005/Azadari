@@ -196,6 +196,18 @@ function getEventDateTime(event) {
   return new Date(`${event.date}T${event.time}`);
 }
 
+function isSameDate(dateA, dateB) {
+  return (
+    dateA.getFullYear() === dateB.getFullYear() &&
+    dateA.getMonth() === dateB.getMonth() &&
+    dateA.getDate() === dateB.getDate()
+  );
+}
+
+function isEventToday(event) {
+  return isSameDate(getEventDateTime(event), new Date());
+}
+
 function cleanPhone(phone) {
   return phone.replace(/\D/g, "");
 }
@@ -437,10 +449,17 @@ function renderNextMajlis() {
     ? nextEvent.speaker.trim()
     : "";
 
+  const nextTodayBadge = isEventToday(nextEvent)
+    ? `<span class="today-badge">Today</span>`
+    : "";
+
   nextMajlisSection.innerHTML = `
     <div class="next-top-row">
       <div class="next-indicator">Next Majlis</div>
-      <div class="countdown" id="countdown"></div>
+      <div class="next-top-actions">
+        ${nextTodayBadge}
+        <div class="countdown" id="countdown"></div>
+      </div>
     </div>
 
     <div class="next-title">
@@ -514,6 +533,10 @@ function buildEventCard(event, includeAdminTools) {
     : "";
   const isPastEvent = getEventDateTime(event) < new Date();
 
+  const todayBadge = isEventToday(event)
+    ? `<span class="today-badge">Today</span>`
+    : "";
+
   const majlisTitleHtml =
     event.majlisTitle && event.majlisTitle.trim()
       ? `<div class="event-subtitle">${event.majlisTitle}</div>`
@@ -577,7 +600,12 @@ function buildEventCard(event, includeAdminTools) {
   card.setAttribute("data-event-date", event.date);
 
   card.innerHTML = `
-      ${includeAdminTools ? adminTitleHtml : publicTitleHtml}
+      <div class="card-title-row">
+        <div>
+          ${includeAdminTools ? adminTitleHtml : publicTitleHtml}
+        </div>
+        ${todayBadge}
+      </div>
 
     <div class="compact-date-line">
       ${formatDisplayDate(event)}
@@ -643,7 +671,11 @@ function renderCalendarStrip() {
           return `
             <button
               type="button"
-              class="calendar-date"
+              class="calendar-date ${
+                isSameDate(new Date(dateValue + "T00:00:00"), new Date())
+                  ? "calendar-date-today"
+                  : ""
+              }"
               onclick="scrollToDate('${dateValue}')"
             >
               <span>${weekday}</span>
