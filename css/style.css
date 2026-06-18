@@ -450,7 +450,7 @@ button:hover,
   .next-title {
     font-size: 22px;
     line-height: 1.25;
-    margin-bottom: 6px;
+    margin: 8px 0 6px;
   }
 
   .event-subtitle,
