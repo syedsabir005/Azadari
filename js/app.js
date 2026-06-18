@@ -208,14 +208,6 @@ function isEventToday(event) {
   return isSameDate(getEventDateTime(event), new Date());
 }
 
-function getHijriBadge(event) {
-  if (!event.hijriDate || !event.hijriDate.trim()) {
-    return "";
-  }
-
-  return event.hijriDate.trim().toUpperCase();
-}
-
 function cleanPhone(phone) {
   return phone.replace(/\D/g, "");
 }
@@ -545,10 +537,6 @@ function buildEventCard(event, includeAdminTools) {
     ? `<span class="today-badge">Today</span>`
     : "";
 
-  const hijriBadge = getHijriBadge(event)
-    ? `<span class="hijri-badge">${getHijriBadge(event)}</span>`
-    : "";
-
   const majlisTitleHtml =
     event.majlisTitle && event.majlisTitle.trim()
       ? `<div class="event-subtitle">${event.majlisTitle}</div>`
@@ -618,8 +606,6 @@ function buildEventCard(event, includeAdminTools) {
         </div>
         ${todayBadge}
       </div>
-
-      ${hijriBadge}
 
     <div class="compact-date-line">
       ${formatDisplayDate(event)}
@@ -909,26 +895,6 @@ window.shareMajlis = async function shareMajlis(index) {
   } else {
     navigator.clipboard.writeText(shareText);
     alert("Majlis details copied");
-  }
-};
-
-window.shareMajlis = async function shareMajlis(index) {
-  const event = events[index];
-  const shareText = buildWhatsAppMessage(event);
-
-  if (navigator.share) {
-    try {
-      await navigator.share({
-        title: event.majlisTitle || event.eventName,
-        text: shareText,
-        url: window.location.href
-      });
-    } catch (error) {
-      // User cancelled sharing.
-    }
-  } else {
-    navigator.clipboard.writeText(shareText);
-    alert("Invite copied to clipboard");
   }
 };
 

@@ -639,9 +639,14 @@ button:hover,
 .compact-date-line,
 .next-date-line {
   display: inline-block;
-  background: #f3f3f3;
-  padding: 6px 12px;
+  background: rgba(176,141,59,.14);
+  color: #9c7a1c;
+  border: 1px solid rgba(176,141,59,.25);
+  padding: 8px 14px;
   border-radius: 999px;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.4;
 }
 
 @media (max-width: 600px) {
@@ -660,10 +665,11 @@ button:hover,
     line-height: 1.25;
   }
 
-  .compact-date-line {
-    font-size: 12.5px;
-    padding: 5px 9px;
-    line-height: 1.3;
+  .compact-date-line,
+  .next-date-line {
+    font-size: 13.5px;
+    padding: 6px 10px;
+    line-height: 1.35;
   }
 
   .compact-meta {
@@ -830,9 +836,9 @@ button:hover,
 
   .compact-date-line,
   .next-date-line {
-    background: rgba(255,255,255,.08);
-    border: 1px solid rgba(255,255,255,.08);
-    color: #f2f2f2;
+    background: rgba(214,184,74,.14);
+    border: 1px solid rgba(214,184,74,.25);
+    color: #d6b84a;
   }
 
   .countdown {
@@ -873,19 +879,6 @@ button:hover,
   white-space: nowrap;
 }
 
-.hijri-badge {
-  display: inline-block;
-  margin: 4px 0 10px;
-  background: rgba(176,141,59,.14);
-  color: #8a6d1f;
-  border: 1px solid rgba(176,141,59,.25);
-  padding: 5px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: .4px;
-}
-
 .next-top-actions {
   display: flex;
   align-items: center;
@@ -899,11 +892,6 @@ button:hover,
 
   .today-badge {
     font-size: 10px;
-    padding: 4px 8px;
-  }
-
-  .hijri-badge {
-    font-size: 11px;
     padding: 4px 8px;
   }
 
@@ -928,11 +916,5 @@ button:hover,
   .today-badge {
     background: #d6b84a;
     color: #111;
-  }
-
-  .hijri-badge {
-    background: rgba(214,184,74,.14);
-    color: #d6b84a;
-    border-color: rgba(214,184,74,.25);
   }
 }
