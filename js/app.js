@@ -208,6 +208,14 @@ function isEventToday(event) {
   return isSameDate(getEventDateTime(event), new Date());
 }
 
+function getHijriBadge(event) {
+  if (!event.hijriDate || !event.hijriDate.trim()) {
+    return "";
+  }
+
+  return event.hijriDate.trim().toUpperCase();
+}
+
 function cleanPhone(phone) {
   return phone.replace(/\D/g, "");
 }
@@ -424,6 +432,7 @@ function getActionButtons(event, originalIndex, includeAdminButtons) {
       <div class="card-actions">
         <a href="${mapUrl}" target="_blank">Directions</a>
         <a href="${whatsappUrl}" target="_blank">WhatsApp</a>
+        <button type="button" onclick="shareMajlis(${originalIndex})">Share</button>
         ${adminButtons}
       </div>
     `;
@@ -448,7 +457,7 @@ function renderNextMajlis() {
   const speaker = nextEvent.speaker && nextEvent.speaker.trim()
     ? nextEvent.speaker.trim()
     : "";
-
+  
   const nextTodayBadge = isEventToday(nextEvent)
     ? `<span class="today-badge">Today</span>`
     : "";
@@ -532,9 +541,12 @@ function buildEventCard(event, includeAdminTools) {
     ? event.speaker.trim()
     : "";
   const isPastEvent = getEventDateTime(event) < new Date();
-
   const todayBadge = isEventToday(event)
     ? `<span class="today-badge">Today</span>`
+    : "";
+
+  const hijriBadge = getHijriBadge(event)
+    ? `<span class="hijri-badge">${getHijriBadge(event)}</span>`
     : "";
 
   const majlisTitleHtml =
@@ -606,6 +618,8 @@ function buildEventCard(event, includeAdminTools) {
         </div>
         ${todayBadge}
       </div>
+
+      ${hijriBadge}
 
     <div class="compact-date-line">
       ${formatDisplayDate(event)}
@@ -876,8 +890,26 @@ window.copyInvite = function copyInvite(index) {
   navigator.clipboard.writeText(
     buildWhatsAppMessage(event)
   );
+};
 
-  alert("Invite copied to clipboard");
+window.shareMajlis = async function shareMajlis(index) {
+  const event = events[index];
+  const shareText = buildWhatsAppMessage(event);
+
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: event.majlisTitle || event.eventName,
+        text: shareText,
+        url: window.location.href
+      });
+    } catch (error) {
+      // Share cancelled
+    }
+  } else {
+    navigator.clipboard.writeText(shareText);
+    alert("Majlis details copied");
+  }
 };
 
 window.shareMajlis = async function shareMajlis(index) {

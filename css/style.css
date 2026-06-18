@@ -239,7 +239,7 @@ button:hover,
 
 .card-actions {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
   margin-top: 16px;
 }
@@ -800,5 +800,139 @@ button:hover,
   .card-actions a:hover,
   button:hover {
     background: #ddd;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .compact-meta,
+  .next-meta,
+  .compact-meta div,
+  .next-meta div,
+  .city-line,
+  .requested-line {
+    color: #e5e5e5;
+  }
+
+  .compact-meta strong,
+  .next-meta strong {
+    color: #ffffff;
+  }
+
+  .event-card,
+  .schedule-card,
+  .next-majlis-section,
+  .welcome-section,
+  .calendar-strip-section,
+  .events-section {
+    border-color: #2d2d2d;
+    border-left-color: #b08d3b;
+  }
+
+  .compact-date-line,
+  .next-date-line {
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.08);
+    color: #f2f2f2;
+  }
+
+  .countdown {
+    background: rgba(176,141,59,.18);
+    color: #f3d37a;
+  }
+
+  .calendar-date-today {
+    background: #b08d3b;
+    color: #111;
+  }
+}
+
+@media (max-width: 600px) {
+  .events-section h2 {
+    font-size: 26px;
+    line-height: 1.15;
+  }
+}
+
+.card-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.today-badge {
+  display: inline-block;
+  background: #b08d3b;
+  color: #111;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  white-space: nowrap;
+}
+
+.hijri-badge {
+  display: inline-block;
+  margin: 4px 0 10px;
+  background: rgba(176,141,59,.14);
+  color: #8a6d1f;
+  border: 1px solid rgba(176,141,59,.25);
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .4px;
+}
+
+.next-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 600px) {
+  .card-title-row {
+    gap: 8px;
+  }
+
+  .today-badge {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+
+  .hijri-badge {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+
+  .next-top-actions {
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .card-actions {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .card-actions a,
+  .card-actions button {
+    font-size: 12.5px;
+    padding: 9px 6px;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .today-badge {
+    background: #d6b84a;
+    color: #111;
+  }
+
+  .hijri-badge {
+    background: rgba(214,184,74,.14);
+    color: #d6b84a;
+    border-color: rgba(214,184,74,.25);
   }
 }
