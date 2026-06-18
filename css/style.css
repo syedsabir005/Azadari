@@ -156,7 +156,7 @@ button:hover,
 }
 
 .event-card {
-  background: #fcfcfc;
+  background: #fff;
   border-radius: 16px;
   padding: 20px;
   margin-bottom: 24px;
@@ -173,7 +173,7 @@ button:hover,
 
 .event-title,
 .next-title {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 700;
   line-height: 1.2;
   margin: 8px 0 6px;
@@ -183,7 +183,7 @@ button:hover,
 .next-subtitle {
   font-size: 18px;
   font-weight: 600;
-  color: #555;
+  color: #666;
   margin-top: 2px;
   margin-bottom: 12px;
 }
@@ -194,7 +194,7 @@ button:hover,
   background: #f3f3f3;
   padding: 6px 12px;
   border-radius: 999px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: #111;
   margin: 10px 0 16px;
@@ -203,8 +203,8 @@ button:hover,
 
 .compact-meta,
 .next-meta {
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 15px;
+  line-height: 1.55;
   color: #333;
   margin-bottom: 16px;
 }
@@ -220,7 +220,7 @@ button:hover,
 }
 
 .requested-line {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: #111;
 }
@@ -450,7 +450,7 @@ button:hover,
 
   .event-subtitle,
   .next-subtitle {
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1.3;
     margin-top: 2px;
     margin-bottom: 8px;
@@ -467,7 +467,7 @@ button:hover,
   .compact-meta,
   .next-meta {
     font-size: 14px;
-    line-height: 1.5;
+    line-height: 1.45;
     margin-bottom: 14px;
   }
 
@@ -481,7 +481,7 @@ button:hover,
   }
 
   .event-card {
-    padding: 16px;
+    padding: 15px;
     margin-bottom: 18px;
     border-radius: 14px;
     border-left: 6px solid #111;
