@@ -10,34 +10,39 @@ body {
 }
 
 .site-header {
-  background: #111;
+  background:
+    radial-gradient(circle at top, rgba(255,255,255,.08), transparent 35%),
+    linear-gradient(180deg, #151515 0%, #0d0d0d 100%);
   color: #fff;
   text-align: center;
-  padding: 24px 20px;
-  border-bottom: 3px solid #444;
+  padding: 34px 20px 38px;
+  border-bottom: 3px solid #333;
 }
 
 .site-logo {
-  width: 110px;
-  max-width: 110px;
-  margin-bottom: 10px;
-  border-radius: 8px;
+  width: 104px;
+  max-width: 104px;
+  margin-bottom: 14px;
+  border-radius: 12px;
+  box-shadow: 0 8px 22px rgba(0,0,0,.45);
 }
 
 .site-header h1 {
   margin: 0;
-  font-size: 28px;
-  font-weight: 700;
-  letter-spacing: 2px;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 2.5px;
   text-transform: uppercase;
 }
 
 .site-header p {
-  margin-top: 8px;
+  margin: 10px auto 0;
+  max-width: 720px;
   font-size: 14px;
-  color: #d5d5d5;
+  color: #d8d8d8;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.2px;
+  line-height: 1.5;
 }
 
 .container {
@@ -539,5 +544,127 @@ button:hover,
   .compact-meta,
   .next-meta {
     font-size: 14px;
+  }
+}
+
+.welcome-section {
+  position: relative;
+  overflow: hidden;
+  border-left: 5px solid #111;
+}
+
+.welcome-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(0,0,0,.06), transparent 65%);
+}
+
+.welcome-kicker {
+  font-size: 12px;
+  font-weight: 800;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  margin-bottom: 10px;
+}
+
+.welcome-section h2 {
+  font-size: 28px;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+
+.welcome-section p {
+  max-width: 680px;
+  font-size: 16px;
+  line-height: 1.65;
+  color: #444;
+}
+
+.welcome-section p + p {
+  margin-top: 8px;
+}
+
+@media (max-width: 600px) {
+  .site-header {
+    padding: 28px 18px 32px;
+  }
+
+  .site-logo {
+    width: 88px;
+    max-width: 88px;
+  }
+
+  .site-header h1 {
+    font-size: 23px;
+    letter-spacing: 1.4px;
+  }
+
+  .site-header p {
+    font-size: 12px;
+    letter-spacing: .6px;
+  }
+
+  .welcome-section h2 {
+    font-size: 25px;
+  }
+
+  .welcome-section p {
+    font-size: 15px;
+    line-height: 1.55;
+  }
+}
+
+.schedule-card {
+  background: #fcfcfc;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  border: 1px solid #e5e5e5;
+  border-left: 6px solid #111;
+  box-shadow:
+    0 2px 10px rgba(0,0,0,.04),
+    0 1px 3px rgba(0,0,0,.03);
+}
+
+.schedule-card .event-subtitle {
+  color: #8a6d1f;
+  font-weight: 700;
+}
+
+.city-line {
+  font-weight: 600;
+  color: #111;
+}
+
+.compact-date-line,
+.next-date-line {
+  display: inline-block;
+  background: #f3f3f3;
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+
+@media (max-width: 600px) {
+  .schedule-card {
+    margin-bottom: 22px;
+  }
+
+  .schedule-card .event-title {
+    font-size: 21px;
+  }
+
+  .schedule-card .event-subtitle {
+    font-size: 16px;
+  }
+
+  .compact-date-line,
+  .next-date-line {
+    font-size: 13px;
+    padding: 6px 10px;
+    line-height: 1.35;
   }
 }

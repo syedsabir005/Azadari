@@ -519,6 +519,8 @@ function buildEventCard(event, includeAdminTools) {
       ? `<div class="event-subtitle">${event.majlisTitle}</div>`
       : "";
 
+  const city = getCityFromAddress(event.address);
+  
   const phoneLine = includeAdminTools && event.phone.trim()
     ? `<div><strong>Phone:</strong> ${event.phone}</div>`
     : "";
@@ -571,7 +573,7 @@ function buildEventCard(event, includeAdminTools) {
     : getActionButtons(event, originalIndex, includeAdminTools);
 
   const card = document.createElement("div");
-  card.className = "event-card compact-event-card";
+  card.className = "event-card compact-event-card schedule-card";
   card.setAttribute("data-event-date", event.date);
 
   card.innerHTML = `
@@ -585,6 +587,7 @@ function buildEventCard(event, includeAdminTools) {
       <div><strong>Time:</strong> ${formatTime(event.time)}</div>
       ${speaker ? `<div><strong>Speaker:</strong> ${speaker}</div>` : ""}
       ${hostLine}
+      ${city ? `<div class="city-line"><strong>Location:</strong> ${city}</div>` : ""}
       <div><strong>Address:</strong> ${event.address}</div>
       ${phoneLine}
       ${notesLine}
