@@ -758,6 +758,10 @@ function renderPublicEvents() {
   if (!publicEventsContainer) return;
 
   publicEventsContainer.innerHTML = "";
+  
+  if (publicSearchInput) {
+    publicSearchInput.style.display = "block";
+  }
 
   if (pastEventsContainer) {
     pastEventsContainer.innerHTML = "";
@@ -775,14 +779,32 @@ function renderPublicEvents() {
     const selectedEvent = events.find((event) => event.id === selectedMajlisId);
 
     if (selectedEvent) {
-      publicMajlisCount.textContent = "Direct Majlis Link";
+      if (publicSearchInput) {
+        publicSearchInput.style.display = "none";
+      }
+
+      if (showPastButton) {
+        showPastButton.style.display = "none";
+      }
+
+      if (pastMajalisSection) {
+        pastMajalisSection.style.display = "none";
+      }
+
+      publicMajlisCount.innerHTML =
+        `<span>Majlis Details</span>
+        <button type="button"
+          class="clear-date-filter"
+          onclick="window.location.href=window.location.pathname">
+          Back to Full Schedule
+        </button>`;
+
       publicEventsContainer.appendChild(
         buildEventCard(selectedEvent, false)
       );
       return;
     }
   }
-
 
   const pastEvents = getSortedEvents(events).filter((event) => {
     return getEventDateTime(event) < now;
