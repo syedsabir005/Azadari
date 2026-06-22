@@ -635,6 +635,11 @@ button:hover,
   font-weight: 700;
 }
 
+.schedule-card {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
 .city-line {
   font-weight: 600;
   color: #111;
@@ -942,4 +947,14 @@ button:hover,
   border-radius: 999px;
   min-height: auto;
   vertical-align: middle;
+  cursor: pointer;
+}
+
+.site-logo-link {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.site-logo-link:hover .site-logo {
+  transform: scale(1.03);
 }
