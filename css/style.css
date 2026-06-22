@@ -240,7 +240,7 @@ button:hover,
 
 .card-actions {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   gap: 8px;
   margin-top: 16px;
 }
@@ -911,7 +911,7 @@ button:hover,
 
 @media (max-width: 600px) {
   .card-actions {
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
   }
 
   .card-actions a,

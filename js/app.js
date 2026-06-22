@@ -403,17 +403,35 @@ END:VCALENDAR`;
 function getActionButtons(event, originalIndex, includeAdminButtons) {
   const mapUrl =
     `https://maps.google.com/?q=${encodeURIComponent(event.address)}`;
+
   const whatsappUrl = getWhatsAppUrl(event);
+
   const googleCalendarUrl = getGoogleCalendarUrl(event);
   const iCalendarUrl = getICalendarUrl(event);
 
-  const callButton = includeAdminButtons && event.phone.trim()
-    ? `<a href="tel:${cleanPhone(event.phone)}">Call</a>`
+  const hostPhone =
+    event.phone && event.phone.trim()
+      ? cleanPhone(event.phone)
+      : "";
+
+  const hostMessage = `Salam, I have a question about this Majlis:
+
+${buildWhatsAppMessage(event)}`;
+
+  const hostWhatsAppUrl = hostPhone
+    ? `https://wa.me/${hostPhone}?text=${encodeURIComponent(hostMessage)}`
+    : "https://wa.me/15717898895?text=Salam%20Sabir%2C%20I%20have%20a%20question%20about%20the%20DFW%20Hyderabadi%20Azadari%20Majalis%20schedule.";
+
+  const callButton = hostPhone
+    ? `<a href="tel:${hostPhone}">Call Host</a>`
     : "";
+
+  const contactButton = hostPhone
+    ? `<a href="${hostWhatsAppUrl}" target="_blank">Message Host</a>`
+    : `<a href="${hostWhatsAppUrl}" target="_blank">Contact Admin</a>`;
 
   const adminButtons = includeAdminButtons
     ? `
-        ${callButton}
         <a href="${googleCalendarUrl}" target="_blank">Google Calendar</a>
         <a href="${iCalendarUrl}" download="${getCalendarTitle(event)}.ics">iCal</a>
         <button type="button" onclick="editEvent(${originalIndex})">Edit</button>
@@ -422,14 +440,16 @@ function getActionButtons(event, originalIndex, includeAdminButtons) {
     : "";
 
   return `
-      <div class="card-actions">
-        <a href="${mapUrl}" target="_blank">Directions</a>
-        <a href="${whatsappUrl}" target="_blank">WhatsApp</a>
-        <button type="button" onclick="shareMajlis(${originalIndex})">Share</button>
-        ${adminButtons}
-      </div>
-    `;
-}
+    <div class="card-actions">
+      <a href="${mapUrl}" target="_blank">Directions</a>
+      <a href="${whatsappUrl}" target="_blank">WhatsApp</a>
+      ${callButton}
+      ${contactButton}
+      <button type="button" onclick="shareMajlis(${originalIndex})">Share</button>
+      ${adminButtons}
+    </div>
+  `;
+} 
 
 function renderNextMajlis() {
   if (!nextMajlisSection) return;
@@ -600,6 +620,20 @@ function buildEventCard(event, includeAdminTools) {
   card.className = "event-card compact-event-card schedule-card";
   card.setAttribute("data-event-date", event.date);
 
+  if (!includeAdminTools) {
+    card.onclick = function (e) {
+      if (
+        e.target.tagName === "A" ||
+        e.target.tagName === "BUTTON"
+      ) {
+        return;
+      }
+
+      window.location.href =
+        `${window.location.pathname}?majlis=${event.id}`;
+    };
+  }
+
   card.innerHTML = `
       <div class="card-title-row">
         <div>
@@ -735,6 +769,21 @@ function renderPublicEvents() {
     return getEventDateTime(event) >= now;
   });
 
+  const selectedMajlisId = getSelectedMajlisIdFromUrl();
+
+  if (selectedMajlisId) {
+    const selectedEvent = events.find((event) => event.id === selectedMajlisId);
+
+    if (selectedEvent) {
+      publicMajlisCount.textContent = "Direct Majlis Link";
+      publicEventsContainer.appendChild(
+        buildEventCard(selectedEvent, false)
+      );
+      return;
+    }
+  }
+
+
   const pastEvents = getSortedEvents(events).filter((event) => {
     return getEventDateTime(event) < now;
   });
@@ -809,6 +858,11 @@ function renderPublicEvents() {
   }
 }
 
+function getSelectedMajlisIdFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("majlis");
+}
+
 function renderAdminEvents() {
   if (!adminEventsContainer || !isAdminAuthenticated) return;
 
@@ -847,6 +901,20 @@ function renderAdminEvents() {
 }
 
 function renderEvents() {
+  const selectedMajlisId = getSelectedMajlisIdFromUrl();
+
+  if (selectedMajlisId) {
+    if (calendarStripSection) calendarStripSection.style.display = "none";
+    if (nextMajlisSection) nextMajlisSection.style.display = "none";
+
+    renderPublicEvents();
+    renderAdminEvents();
+    return;
+  }
+
+  if (calendarStripSection) calendarStripSection.style.display = "block";
+  if (nextMajlisSection) nextMajlisSection.style.display = "block";
+
   renderCalendarStrip();
   renderNextMajlis();
   renderPublicEvents();
